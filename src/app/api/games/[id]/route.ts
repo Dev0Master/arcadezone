@@ -5,10 +5,11 @@ import { Game } from '../../../../lib/types';
 // GET: Get a single game by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const game = await db.getGameById(params.id);
+    const { id } = await params;
+    const game = await db.getGameById(id);
 
     if (!game) {
       return Response.json({ error: 'Game not found' }, { status: 404 });
@@ -24,9 +25,11 @@ export async function GET(
 // PUT: Update a game
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+
     // Check authentication by verifying the presence of auth token cookie
     const authCookie = request.headers.get('cookie');
     let hasAuthToken = false;
@@ -53,7 +56,7 @@ export async function PUT(
       return Response.json({ error: 'Title and description are required' }, { status: 400 });
     }
 
-    const updatedGame = await db.updateGame(params.id, {
+    const updatedGame = await db.updateGame(id, {
       title,
       description,
       imageUrl,
@@ -73,9 +76,11 @@ export async function PUT(
 // DELETE: Delete a game
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+
     // Check authentication by verifying the presence of auth token cookie
     const authCookie = request.headers.get('cookie');
     let hasAuthToken = false;
@@ -96,7 +101,7 @@ export async function DELETE(
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const success = await db.deleteGame(params.id);
+    const success = await db.deleteGame(id);
 
     if (!success) {
       return Response.json({ error: 'Game not found' }, { status: 404 });
