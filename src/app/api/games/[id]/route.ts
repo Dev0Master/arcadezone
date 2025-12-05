@@ -1,14 +1,19 @@
 import { NextRequest } from 'next/server';
-import { db } from '../../../../lib/db';
-import { Game } from '../../../../lib/types';
+import { db } from '@/lib/db';
+import { Game } from '@/lib/types';
+
+// Define the context type explicitly
+interface RouteHandlerContext {
+  params: Promise<{ id: string }>;
+}
 
 // GET: Get a single game by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  context: RouteHandlerContext
 ) {
   try {
-    const { id } = await params;
+    const { id } = await context.params;
     const game = await db.getGameById(id);
 
     if (!game) {
@@ -25,10 +30,10 @@ export async function GET(
 // PUT: Update a game
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  context: RouteHandlerContext
 ) {
   try {
-    const { id } = await params;
+    const { id } = await context.params;
 
     // Check authentication by verifying the presence of auth token cookie
     const authCookie = request.headers.get('cookie');
@@ -76,10 +81,10 @@ export async function PUT(
 // DELETE: Delete a game
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  context: RouteHandlerContext
 ) {
   try {
-    const { id } = await params;
+    const { id } = await context.params;
 
     // Check authentication by verifying the presence of auth token cookie
     const authCookie = request.headers.get('cookie');

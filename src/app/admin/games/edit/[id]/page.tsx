@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { Game } from '../../../lib/types';
+import { Game } from '@/lib/types';
 
 export default function EditGamePage() {
   const [title, setTitle] = useState('');
@@ -18,7 +18,9 @@ export default function EditGamePage() {
   useEffect(() => {
     const fetchGame = async () => {
       try {
-        const response = await fetch(`/api/games/${params.id}`);
+        // Handle params.id which might be a string or undefined
+        const id = typeof params.id === 'string' ? params.id : (params.id as string[])[0];
+        const response = await fetch(`/api/games/${id}`);
         if (response.ok) {
           const data = await response.json();
           const game: Game = data.game;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Game } from '../../../lib/types';
+import { Game } from '@/lib/types';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 

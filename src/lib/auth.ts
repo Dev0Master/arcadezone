@@ -3,7 +3,7 @@ import { compare, hash } from 'bcryptjs';
 
 export const login = async (username: string, password: string): Promise<boolean> => {
   try {
-    const user = db.getAdminByUsername(username);
+    const user = await db.getAdminByUsername(username);
     if (!user) return false;
 
     // Compare the provided password with the stored hash

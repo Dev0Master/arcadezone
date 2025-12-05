@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
-import { db } from '../../../lib/db';
-import { Game } from '../../../lib/types';
+import { db } from '@/lib/db';
+import { Game } from '@/lib/types';
 
 export async function GET(request: NextRequest) {
   try {

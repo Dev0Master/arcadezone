@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { Game } from '../lib/types';
+import { Game } from '@/lib/types';
 
 export default function HomePage() {
   const [games, setGames] = useState<Game[]>([]);
