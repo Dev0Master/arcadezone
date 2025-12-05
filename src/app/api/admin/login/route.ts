@@ -13,6 +13,12 @@ export async function POST(request: NextRequest) {
     const isValid = await login(username, password);
 
     if (isValid) {
+      // Verify that the user exists in the database
+      const user = await db.getAdminByUsername(username);
+      if (!user) {
+        return Response.json({ error: 'User not found' }, { status: 401 });
+      }
+
       // Return success without creating a specific session
       return Response.json({
         success: true,
