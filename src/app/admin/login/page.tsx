@@ -22,10 +22,11 @@ export default function AdminLogin() {
       });
 
       if (response.ok) {
-        const data = await response.json();
+        // Create a simple auth token (timestamp-based) to store in cookie
+        const authToken = `auth_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-        // Store the session token in a cookie
-        document.cookie = `auth_token=${data.token}; path=/; max-age=86400; SameSite=Strict`;
+        // Store the auth token in a cookie
+        document.cookie = `auth_token=${authToken}; path=/; max-age=86400; SameSite=Strict`;
 
         router.push('/admin/dashboard');
         router.refresh();

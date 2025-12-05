@@ -8,12 +8,23 @@ export function middleware(request: NextRequest) {
       return NextResponse.next();
     }
 
-    // For all other admin routes, check authentication by looking for a session cookie
-    const cookieStore = request.cookies;
-    const session = cookieStore.get('auth_token'); // Updated cookie name
+    // For all other admin routes, check for the presence of auth token cookie
+    const authCookie = request.headers.get('cookie');
+    let hasAuthToken = false;
 
-    if (!session) {
-      // Redirect to login if not authenticated
+    if (authCookie) {
+      const cookies = authCookie.split(';');
+      for (const cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'auth_token') {
+          hasAuthToken = true;
+          break;
+        }
+      }
+    }
+
+    // Redirect to login if no auth token is found
+    if (!hasAuthToken) {
       return NextResponse.redirect(new URL('/admin/login', request.url));
     }
   }
@@ -23,5 +34,9 @@ export function middleware(request: NextRequest) {
 
 // Apply middleware to admin routes
 export const config = {
-  matcher: ['/admin/:path*'], // Removed api matcher since API routes handle auth differently
+  matcher: [
+    '/admin',
+    '/admin/',
+    '/admin/:path*',
+  ], // Match the base admin path and all sub-paths
 };

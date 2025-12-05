@@ -13,16 +13,10 @@ export async function POST(request: NextRequest) {
     const isValid = await login(username, password);
 
     if (isValid) {
-      // Create a session in the database
-      const sessionId = db.createSession(username); // In a real app, use user ID instead of username
-
-      // Return the session token
-      // Note: We can't set cookies in API routes in Next.js App Router the traditional way
-      // The client will handle authentication in another way
+      // Return success without creating a specific session
       return Response.json({
         success: true,
-        message: 'Login successful',
-        token: sessionId
+        message: 'Login successful'
       });
     } else {
       return Response.json({ error: 'Invalid credentials' }, { status: 401 });

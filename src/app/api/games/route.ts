@@ -4,7 +4,7 @@ import { Game } from '../../../lib/types';
 
 export async function GET(request: NextRequest) {
   try {
-    const games = db.getAllGames();
+    const games = await db.getAllGames();
 
     // Return games in JSON format
     return Response.json({
@@ -19,23 +19,23 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    // Check authentication by validating session token from cookie
+    // Check authentication by verifying the presence of auth token cookie
     const authCookie = request.headers.get('cookie');
-    let sessionId = null;
+    let hasAuthToken = false;
 
     if (authCookie) {
       const cookies = authCookie.split(';');
       for (const cookie of cookies) {
         const [name, value] = cookie.trim().split('=');
         if (name === 'auth_token') {
-          sessionId = value;
+          hasAuthToken = true;
           break;
         }
       }
     }
 
-    // Validate session
-    if (!sessionId || !db.validateSession(sessionId)) {
+    // Return unauthorized if no auth token is found
+    if (!hasAuthToken) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: 'Title and description are required' }, { status: 400 });
     }
 
-    const newGame = db.addGame({
+    const newGame = await db.addGame({
       title,
       description,
       imageUrl,

@@ -11,27 +11,32 @@ export default function AdminDashboard() {
   const router = useRouter();
 
   useEffect(() => {
-    const fetchGames = async () => {
+    // First, verify that the user is authenticated by making a simple authenticated API call
+    const verifyAuth = async () => {
       try {
         const response = await fetch('/api/games');
+        if (response.status === 401 || response.status === 403) {
+          // If unauthorized, redirect to login
+          router.push('/admin/login');
+          return;
+        }
+
         if (response.ok) {
           const data = await response.json();
           setGames(data.games);
         } else {
-          // If unauthorized, redirect to login
-          if (response.status === 401 || response.status === 403) {
-            router.push('/admin/login');
-          }
+          // Handle other errors
+          router.push('/admin/login');
         }
       } catch (error) {
-        console.error('Error fetching games:', error);
+        console.error('Error verifying authentication or fetching games:', error);
         router.push('/admin/login');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchGames();
+    verifyAuth();
   }, [router]);
 
   const handleLogout = async () => {

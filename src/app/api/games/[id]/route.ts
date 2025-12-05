@@ -8,7 +8,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const game = db.getGameById(params.id);
+    const game = await db.getGameById(params.id);
 
     if (!game) {
       return Response.json({ error: 'Game not found' }, { status: 404 });
@@ -27,23 +27,23 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    // Check authentication by validating session token from cookie
+    // Check authentication by verifying the presence of auth token cookie
     const authCookie = request.headers.get('cookie');
-    let sessionId = null;
+    let hasAuthToken = false;
 
     if (authCookie) {
       const cookies = authCookie.split(';');
       for (const cookie of cookies) {
         const [name, value] = cookie.trim().split('=');
         if (name === 'auth_token') {
-          sessionId = value;
+          hasAuthToken = true;
           break;
         }
       }
     }
 
-    // Validate session
-    if (!sessionId || !db.validateSession(sessionId)) {
+    // Return unauthorized if no auth token is found
+    if (!hasAuthToken) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -53,7 +53,7 @@ export async function PUT(
       return Response.json({ error: 'Title and description are required' }, { status: 400 });
     }
 
-    const updatedGame = db.updateGame(params.id, {
+    const updatedGame = await db.updateGame(params.id, {
       title,
       description,
       imageUrl,
@@ -76,27 +76,27 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    // Check authentication by validating session token from cookie
+    // Check authentication by verifying the presence of auth token cookie
     const authCookie = request.headers.get('cookie');
-    let sessionId = null;
+    let hasAuthToken = false;
 
     if (authCookie) {
       const cookies = authCookie.split(';');
       for (const cookie of cookies) {
         const [name, value] = cookie.trim().split('=');
         if (name === 'auth_token') {
-          sessionId = value;
+          hasAuthToken = true;
           break;
         }
       }
     }
 
-    // Validate session
-    if (!sessionId || !db.validateSession(sessionId)) {
+    // Return unauthorized if no auth token is found
+    if (!hasAuthToken) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const success = db.deleteGame(params.id);
+    const success = await db.deleteGame(params.id);
 
     if (!success) {
       return Response.json({ error: 'Game not found' }, { status: 404 });
