@@ -1,6 +1,9 @@
 "use client";
 
+<<<<<<< HEAD
 import { useState } from 'react';
+=======
+>>>>>>> f9250e10cc08f6fdf91e955dae0ee825ff9e1717
 import { Review } from '@/lib/types';
 import StarRating from './StarRating';
 
