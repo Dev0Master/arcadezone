@@ -276,6 +276,22 @@ export const db = {
   },
 
   async getGamesByCategory(categoryId: string): Promise<Game[]> {
+    // First get the game IDs for this category
+    const { data: gameIds, error: gameIdsError } = await supabase
+      .from('game_categories')
+      .select('game_id')
+      .eq('category_id', categoryId);
+
+    if (gameIdsError) {
+      console.error('Error fetching game IDs for category:', gameIdsError);
+      return [];
+    }
+
+    if (!gameIds || gameIds.length === 0) {
+      return [];
+    }
+
+    // Then get the games
     const { data, error } = await supabase
       .from('games')
       .select(`
@@ -287,12 +303,7 @@ export const db = {
           created_at
         )
       `)
-      .in('id',
-        supabase
-          .from('game_categories')
-          .select('game_id')
-          .eq('category_id', categoryId)
-      )
+      .in('id', gameIds.map(g => g.game_id))
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -317,6 +328,66 @@ export const db = {
   },
 
   async searchGames(query: string, categoryId?: string): Promise<Game[]> {
+    // If we have a category filter, we need to get the game IDs first
+    if (categoryId) {
+      const { data: gameIds, error: gameIdsError } = await supabase
+        .from('game_categories')
+        .select('game_id')
+        .eq('category_id', categoryId);
+
+      if (gameIdsError) {
+        console.error('Error fetching game IDs for category:', gameIdsError);
+        return [];
+      }
+
+      if (!gameIds || gameIds.length === 0) {
+        return [];
+      }
+
+      let supabaseQuery = supabase
+        .from('games')
+        .select(`
+          *,
+          categories (
+            id,
+            name,
+            description,
+            created_at
+          )
+        `)
+        .in('id', gameIds.map(g => g.game_id));
+
+      // Add text search
+      if (query) {
+        supabaseQuery = supabaseQuery
+          .or(`title.ilike.%${query}%,description.ilike.%${query}%`);
+      }
+
+      const { data, error } = await supabaseQuery
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error searching games:', error);
+        return [];
+      }
+
+      return data.map((row: any) => ({
+        id: row.id,
+        title: row.title,
+        description: row.description,
+        imageUrl: row.image_url || undefined,
+        createdAt: new Date(row.created_at),
+        updatedAt: new Date(row.updated_at),
+        categories: row.categories?.map((cat: any) => ({
+          id: cat.id,
+          name: cat.name,
+          description: cat.description,
+          createdAt: new Date(cat.created_at),
+        })) || [],
+      }));
+    }
+
+    // No category filter - simpler query
     let supabaseQuery = supabase
       .from('games')
       .select(`
@@ -333,17 +404,6 @@ export const db = {
     if (query) {
       supabaseQuery = supabaseQuery
         .or(`title.ilike.%${query}%,description.ilike.%${query}%`);
-    }
-
-    // Add category filter
-    if (categoryId) {
-      supabaseQuery = supabaseQuery
-        .in('id',
-          supabase
-            .from('game_categories')
-            .select('game_id')
-            .eq('category_id', categoryId)
-        );
     }
 
     const { data, error } = await supabaseQuery
