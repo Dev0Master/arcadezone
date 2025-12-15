@@ -25,7 +25,7 @@ export function middleware(request: NextRequest) {
 
     // Redirect to login if no auth token is found
     if (!hasAuthToken) {
-      return NextResponse.redirect(new URL('/admin/login', request.url));
+      return NextResponse.redirect(new URL('/login', request.url));
     }
   }
 
