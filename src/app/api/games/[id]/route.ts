@@ -9,7 +9,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const game = await db.getGameById(id);
+    const game = await db.getGameByIdWithDetails(id);
 
     if (!game) {
       return Response.json({ error: 'Game not found' }, { status: 404 });

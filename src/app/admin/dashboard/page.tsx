@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Game } from '@/lib/types';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import StarRating from '@/components/ratings/StarRating';
 
 export default function AdminDashboard() {
   const [games, setGames] = useState<Game[]>([]);
@@ -17,7 +18,7 @@ export default function AdminDashboard() {
         const response = await fetch('/api/games');
         if (response.status === 401 || response.status === 403) {
           // If unauthorized, redirect to login
-          router.push('/admin/login');
+          router.push('/login');
           return;
         }
 
@@ -26,11 +27,11 @@ export default function AdminDashboard() {
           setGames(data.games);
         } else {
           // Handle other errors
-          router.push('/admin/login');
+          router.push('/login');
         }
       } catch (error) {
         console.error('Error verifying authentication or fetching games:', error);
-        router.push('/admin/login');
+        router.push('/login');
       } finally {
         setLoading(false);
       }
@@ -48,7 +49,7 @@ export default function AdminDashboard() {
       // Clear the auth cookie
       document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
 
-      router.push('/admin/login');
+      router.push('/login');
       router.refresh();
     } catch (error) {
       console.error('Error logging out:', error);
@@ -80,6 +81,16 @@ export default function AdminDashboard() {
             <li>
               <Link href="/admin/games/new" className="block p-2 text-[var(--gaming-light)] hover:bg-[var(--gaming-card-hover)] rounded">
                 Add New Game
+              </Link>
+            </li>
+            <li>
+              <Link href="/admin/reviews" className="block p-2 text-[var(--gaming-light)] hover:bg-[var(--gaming-card-hover)] rounded">
+                Reviews Management
+              </Link>
+            </li>
+            <li>
+              <Link href="/admin/categories" className="block p-2 text-[var(--gaming-light)] hover:bg-[var(--gaming-card-hover)] rounded">
+                Categories
               </Link>
             </li>
             <li>
@@ -119,6 +130,8 @@ export default function AdminDashboard() {
               <thead>
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-[var(--gaming-light)] uppercase tracking-wider">Title</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[var(--gaming-light)] uppercase tracking-wider">Rating</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[var(--gaming-light)] uppercase tracking-wider">Reviews</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-[var(--gaming-light)] uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
@@ -128,6 +141,23 @@ export default function AdminDashboard() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-bold text-[var(--foreground)]">{game.title}</div>
                       <div className="text-sm text-[var(--gaming-light)] line-clamp-1">{game.description}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {game.averageRating ? (
+                        <div className="flex items-center gap-2">
+                          <StarRating rating={game.averageRating} readonly size="sm" />
+                          <span className="text-sm text-[var(--gaming-light)]">
+                            {game.averageRating.toFixed(1)}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-sm text-[var(--gaming-light)]">No ratings</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-sm text-[var(--gaming-light)]">
+                        {game.totalRatings || 0} review{(game.totalRatings || 0) !== 1 ? 's' : ''}
+                      </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <Link
