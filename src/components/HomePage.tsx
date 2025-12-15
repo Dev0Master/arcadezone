@@ -1,6 +1,5 @@
 "use client";
 
-import { Suspense } from 'react';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -9,7 +8,7 @@ import SearchBar from '@/components/search/SearchBar';
 import FilterSidebar from '@/components/search/FilterSidebar';
 import GameCard from '@/components/game/GameCard';
 
-function HomePageInner() {
+export default function HomePage() {
   const [games, setGames] = useState<Game[]>([]);
   const [filteredGames, setFilteredGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
@@ -215,17 +214,5 @@ function HomePageInner() {
         </div>
       </footer>
     </div>
-  );
-}
-
-export default function HomePageContent() {
-  return (
-    <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center p-4">
-        <div className="text-2xl font-semibold text-[var(--gaming-primary)]">Loading...</div>
-      </div>
-    }>
-      <HomePageInner />
-    </Suspense>
   );
 }

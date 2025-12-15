@@ -276,7 +276,6 @@ export const db = {
   },
 
   async getGamesByCategory(categoryId: string): Promise<Game[]> {
-<<<<<<< HEAD
     // First get the game IDs for this category
     const { data: gameIds, error: gameIdsError } = await supabase
       .from('game_categories')
@@ -293,8 +292,6 @@ export const db = {
     }
 
     // Then get the games
-=======
->>>>>>> f9250e10cc08f6fdf91e955dae0ee825ff9e1717
     const { data, error } = await supabase
       .from('games')
       .select(`
@@ -306,16 +303,7 @@ export const db = {
           created_at
         )
       `)
-<<<<<<< HEAD
       .in('id', gameIds.map(g => g.game_id))
-=======
-      .in('id',
-        supabase
-          .from('game_categories')
-          .select('game_id')
-          .eq('category_id', categoryId)
-      )
->>>>>>> f9250e10cc08f6fdf91e955dae0ee825ff9e1717
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -340,7 +328,6 @@ export const db = {
   },
 
   async searchGames(query: string, categoryId?: string): Promise<Game[]> {
-<<<<<<< HEAD
     // If we have a category filter, we need to get the game IDs first
     if (categoryId) {
       const { data: gameIds, error: gameIdsError } = await supabase
@@ -401,8 +388,6 @@ export const db = {
     }
 
     // No category filter - simpler query
-=======
->>>>>>> f9250e10cc08f6fdf91e955dae0ee825ff9e1717
     let supabaseQuery = supabase
       .from('games')
       .select(`
@@ -421,20 +406,6 @@ export const db = {
         .or(`title.ilike.%${query}%,description.ilike.%${query}%`);
     }
 
-<<<<<<< HEAD
-=======
-    // Add category filter
-    if (categoryId) {
-      supabaseQuery = supabaseQuery
-        .in('id',
-          supabase
-            .from('game_categories')
-            .select('game_id')
-            .eq('category_id', categoryId)
-        );
-    }
-
->>>>>>> f9250e10cc08f6fdf91e955dae0ee825ff9e1717
     const { data, error } = await supabaseQuery
       .order('created_at', { ascending: false });
 
