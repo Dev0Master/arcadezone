@@ -4,6 +4,11 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Category, Platform } from '@/lib/types';
 import StarRating from '@/components/ratings/StarRating';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function AddGamePage() {
   const [title, setTitle] = useState('');
@@ -40,14 +45,6 @@ export default function AddGamePage() {
     }
   };
 
-  const handleCategoryToggle = (categoryId: string) => {
-    setSelectedCategories(prev =>
-      prev.includes(categoryId)
-        ? prev.filter(id => id !== categoryId)
-        : [...prev, categoryId]
-    );
-  };
-
   const fetchPlatforms = async () => {
     try {
       const response = await fetch('/api/platforms');
@@ -60,14 +57,6 @@ export default function AddGamePage() {
     } finally {
       setPlatformsLoading(false);
     }
-  };
-
-  const handlePlatformToggle = (platformId: string) => {
-    setSelectedPlatforms(prev =>
-      prev.includes(platformId)
-        ? prev.filter(id => id !== platformId)
-        : [...prev, platformId]
-    );
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -200,45 +189,41 @@ export default function AddGamePage() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-6 bg-[var(--background)]">
-        <div className="max-w-3xl mx-auto game-card p-6">
-          <h1 className="text-2xl font-bold text-[var(--foreground)] mb-6">إضافة لعبة جديدة</h1>
+      <div className="flex-1 p-6 bg-background">
+        <Card className="max-w-3xl mx-auto">
+          <CardHeader>
+            <CardTitle>إضافة لعبة جديدة</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <Label htmlFor="title">العنوان *</Label>
+                <Input
+                  type="text"
+                  id="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
+                  placeholder="أدخل عنوان اللعبة"
+                  className="mt-1"
+                />
+              </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="title" className="block text-sm font-medium text-[var(--gaming-light)] mb-1">
-              العنوان *
-            </label>
-            <input
-              type="text"
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-              className="input-field"
-              placeholder="أدخل عنوان اللعبة"
-            />
-          </div>
-
-          <div className="mb-6">
-            <label htmlFor="description" className="block text-sm font-medium text-[var(--gaming-light)] mb-1">
-              الوصف *
-            </label>
-            <textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-              rows={4}
-              className="input-field"
-              placeholder="أدخل وصف اللعبة"
-            ></textarea>
-          </div>
+              <div className="mb-6">
+                <Label htmlFor="description">الوصف *</Label>
+                <Textarea
+                  id="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  required
+                  rows={4}
+                  placeholder="أدخل وصف اللعبة"
+                  className="mt-1"
+                />
+              </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium text-[var(--gaming-light)] mb-1">
-              صورة اللعبة
-            </label>
+            <Label>صورة اللعبة</Label>
 
             {/* Image Upload */}
             <div className="flex items-center space-x-reverse space-x-4">
@@ -278,13 +263,14 @@ export default function AddGamePage() {
 
               <div className="flex flex-col space-y-2">
                 {(previewUrl || imageUrl) && (
-                  <button
+                  <Button
                     type="button"
                     onClick={removeImagePreview}
-                    className="px-3 py-1 text-sm btn btn-danger"
+                    variant="gaming-danger"
+                    size="sm"
                   >
                     إزالة
-                  </button>
+                  </Button>
                 )}
               </div>
             </div>
@@ -292,63 +278,65 @@ export default function AddGamePage() {
 
           {/* Category Selection */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-[var(--gaming-light)] mb-2">
-              الفئات *
-            </label>
+            <Label htmlFor="categories">الفئات *</Label>
             {categoriesLoading ? (
               <div className="text-[var(--gaming-light)]">جارٍ تحميل الفئات...</div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+              <select
+                id="categories"
+                multiple
+                value={selectedCategories}
+                onChange={(e) => {
+                  const values = Array.from(e.target.selectedOptions, option => option.value);
+                  setSelectedCategories(values);
+                }}
+                className="w-full px-3 py-2 bg-[var(--gaming-dark)] border border-[var(--gaming-light)]/30 rounded-lg text-[var(--foreground)] focus:outline-none focus:border-[var(--gaming-primary)] h-32"
+                size={4}
+              >
                 {categories.map((category) => (
-                  <label
-                    key={category.id}
-                    className="flex items-center p-3 bg-[var(--gaming-dark)] border border-[var(--gaming-light)]/20 rounded-lg cursor-pointer hover:bg-[var(--gaming-card-hover)]"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedCategories.includes(category.id)}
-                      onChange={() => handleCategoryToggle(category.id)}
-                      className="ml-2 w-4 h-4 text-[var(--gaming-primary)] bg-gray-100 border-gray-300 rounded focus:ring-[var(--gaming-primary)] focus:ring-2"
-                    />
-                    <span className="text-[var(--foreground)]">{category.name}</span>
-                  </label>
+                  <option key={category.id} value={category.id} className="bg-[var(--gaming-dark)]">
+                    {category.name}
+                  </option>
                 ))}
-              </div>
+              </select>
             )}
+            <p className="text-xs text-[var(--gaming-light)] mt-1">
+              اضغط مع الاستمرار على Ctrl أو Command لتحديد فئات متعددة
+            </p>
           </div>
 
           {/* Platform Selection */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-[var(--gaming-light)] mb-2">
-              المنصات *
-            </label>
+            <Label htmlFor="platforms">المنصات *</Label>
             {platformsLoading ? (
               <div className="text-[var(--gaming-light)]">جارٍ تحميل المنصات...</div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+              <select
+                id="platforms"
+                multiple
+                value={selectedPlatforms}
+                onChange={(e) => {
+                  const values = Array.from(e.target.selectedOptions, option => option.value);
+                  setSelectedPlatforms(values);
+                }}
+                className="w-full px-3 py-2 bg-[var(--gaming-dark)] border border-[var(--gaming-light)]/30 rounded-lg text-[var(--foreground)] focus:outline-none focus:border-[var(--gaming-primary)] h-32"
+                size={4}
+              >
                 {platforms.map((platform) => (
-                  <label
-                    key={platform.id}
-                    className="flex items-center p-3 bg-[var(--gaming-dark)] border border-[var(--gaming-light)]/20 rounded-lg cursor-pointer hover:bg-[var(--gaming-card-hover)]"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedPlatforms.includes(platform.id)}
-                      onChange={() => handlePlatformToggle(platform.id)}
-                      className="ml-2 w-4 h-4 text-[var(--gaming-primary)] bg-gray-100 border-gray-300 rounded focus:ring-[var(--gaming-primary)] focus:ring-2"
-                    />
-                    <span className="text-[var(--foreground)]">{platform.name}</span>
-                  </label>
+                  <option key={platform.id} value={platform.id} className="bg-[var(--gaming-dark)]">
+                    {platform.name}
+                  </option>
                 ))}
-              </div>
+              </select>
             )}
+            <p className="text-xs text-[var(--gaming-light)] mt-1">
+              اضغط مع الاستمرار على Ctrl أو Command لتحديد منصات متعددة
+            </p>
           </div>
 
           {/* Initial Rating */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-[var(--gaming-light)] mb-2">
-              التقييم الأولي
-            </label>
+            <Label>التقييم الأولي</Label>
             <div className="flex items-center gap-4">
               <StarRating
                 rating={initialRating}
@@ -362,24 +350,25 @@ export default function AddGamePage() {
           </div>
 
           <div className="flex space-x-reverse space-x-4">
-            <button
+            <Button
               type="submit"
               disabled={loading}
-              className={`btn ${loading ? 'btn-outline' : 'btn-primary'}`}
+              variant={loading ? "outline" : "gaming"}
             >
               {loading ? 'جارٍ الإضافة...' : 'إضافة اللعبة'}
-            </button>
+            </Button>
 
-            <button
+            <Button
               type="button"
               onClick={() => router.back()}
-              className="btn btn-outline"
+              variant="outline"
             >
               إلغاء
-            </button>
+            </Button>
           </div>
         </form>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

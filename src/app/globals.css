@@ -1,18 +1,43 @@
 @import "tailwindcss";
 
-:root {
-  --background: #0f172a; /* slate-900 */
-  --foreground: #f1f5f9; /* slate-100 */
-  --gaming-primary: #8b5cf6; /* violet-500 */
-  --gaming-secondary: #ec4899; /* pink-500 */
-  --gaming-accent: #06b6d4; /* cyan-500 */
-  --gaming-dark: #020617; /* slate-950 */
-  --gaming-light: #e2e8f0; /* slate-200 */
-  --gaming-card-bg: #1e293b; /* slate-800 */
-  --gaming-card-hover: #334155; /* slate-700 */
-  --gaming-success: #10b981; /* emerald-500 */
-  --gaming-warning: #f59e0b; /* amber-500 */
-  --gaming-danger: #ef4444; /* red-500 */
+@layer base {
+  :root {
+    /* Original gaming theme colors */
+    --background: #0f172a; /* slate-900 */
+    --foreground: #f1f5f9; /* slate-100 */
+    --gaming-primary: #8b5cf6; /* violet-500 */
+    --gaming-secondary: #ec4899; /* pink-500 */
+    --gaming-accent: #06b6d4; /* cyan-500 */
+    --gaming-dark: #020617; /* slate-950 */
+    --gaming-light: #e2e8f0; /* slate-200 */
+    --gaming-card-bg: #1e293b; /* slate-800 */
+    --gaming-card-hover: #334155; /* slate-700 */
+    --gaming-success: #10b981; /* emerald-500 */
+    --gaming-warning: #f59e0b; /* amber-500 */
+    --gaming-danger: #ef4444; /* red-500 */
+
+    /* shadcn/ui variables - mapped to gaming theme */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 262.1 83.3% 57.8%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 188.2 100% 41.4%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 262.1 83.3% 57.8%;
+    --radius: 0.5rem;
+  }
 }
 
 @theme inline {
@@ -32,11 +57,20 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
   font-family: var(--font-cairo), 'Cairo', sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
   text-align: right;
+}
+
+@layer base {
+  * {
+    @apply border-[var(--border)];
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
 
 /* RTL-specific utilities */

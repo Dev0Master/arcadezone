@@ -2,6 +2,9 @@
 
 import Link from 'next/link';
 import { Game } from '@/lib/types';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 interface GameCardProps {
   game: Game;
@@ -21,7 +24,7 @@ export default function GameCard({ game }: GameCardProps) {
 
   return (
     <Link href={`/games/${game.id}`}>
-      <div className="game-card group cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
+      <Card className="group cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[var(--gaming-primary)]/30">
         {/* Game Image */}
         <div className="relative overflow-hidden rounded-t-lg">
           {game.imageUrl ? (
@@ -45,17 +48,14 @@ export default function GameCard({ game }: GameCardProps) {
           {game.categories && game.categories.length > 0 && (
             <div className="absolute top-2 right-2 flex flex-wrap gap-1">
               {game.categories.slice(0, 2).map((category) => (
-                <span
-                  key={category.id}
-                  className="px-2 py-1 bg-black/50 backdrop-blur-sm text-white text-xs rounded-full"
-                >
+                <Badge key={category.id} variant="category" className="text-xs">
                   {category.name}
-                </span>
+                </Badge>
               ))}
               {game.categories.length > 2 && (
-                <span className="px-2 py-1 bg-black/50 backdrop-blur-sm text-white text-xs rounded-full">
+                <Badge variant="category" className="text-xs">
                   +{game.categories.length - 2}
-                </span>
+                </Badge>
               )}
             </div>
           )}
@@ -64,29 +64,26 @@ export default function GameCard({ game }: GameCardProps) {
           {game.platforms && game.platforms.length > 0 && (
             <div className="absolute bottom-2 left-2 flex flex-wrap gap-1">
               {game.platforms.slice(0, 3).map((platform) => (
-                <span
-                  key={platform.id}
-                  className="px-2 py-1 bg-[var(--gaming-primary)]/80 backdrop-blur-sm text-white text-xs rounded"
-                >
+                <Badge key={platform.id} variant="platform" className="text-xs">
                   {platform.code}
-                </span>
+                </Badge>
               ))}
               {game.platforms.length > 3 && (
-                <span className="px-2 py-1 bg-[var(--gaming-primary)]/80 backdrop-blur-sm text-white text-xs rounded">
+                <Badge variant="platform" className="text-xs">
                   +{game.platforms.length - 3}
-                </span>
+                </Badge>
               )}
             </div>
           )}
         </div>
 
         {/* Game Info */}
-        <div className="p-4">
-          <h3 className="text-lg font-bold text-[var(--foreground)] truncate mb-2 group-hover:text-[var(--gaming-primary)] transition-colors">
+        <CardContent className="p-4">
+          <h3 className="text-lg font-bold text-foreground truncate mb-2 group-hover:text-[var(--gaming-primary)] transition-colors">
             {game.title}
           </h3>
 
-          <p className="text-[var(--gaming-light)] text-sm line-clamp-2 mb-3 h-10">
+          <p className="text-muted-foreground text-sm line-clamp-2 mb-3 h-10">
             {game.description}
           </p>
 
@@ -96,7 +93,7 @@ export default function GameCard({ game }: GameCardProps) {
               <div className="flex items-center gap-1">
                 {renderStars(game.averageRating)}
               </div>
-              <span className="text-xs text-[var(--gaming-light)]">
+              <span className="text-xs text-muted-foreground">
                 {game.totalRatings} {game.totalRatings === 1 ? 'مراجعة' : 'مراجعات'}
               </span>
             </div>
@@ -104,12 +101,12 @@ export default function GameCard({ game }: GameCardProps) {
 
           {/* View Details Button */}
           <div className="mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <button className="w-full btn btn-primary py-1 text-sm">
+            <Button className="w-full gaming py-1 text-sm">
               عرض التفاصيل
-            </button>
+            </Button>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </Link>
   );
 }
