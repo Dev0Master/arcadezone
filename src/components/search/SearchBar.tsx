@@ -8,7 +8,7 @@ interface SearchBarProps {
   onSearch?: (query: string) => void;
 }
 
-export default function SearchBar({ placeholder = "Search games...", onSearch }: SearchBarProps) {
+export default function SearchBar({ placeholder = "ابحث عن الألعاب...", onSearch }: SearchBarProps) {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -79,10 +79,10 @@ export default function SearchBar({ placeholder = "Search games...", onSearch }:
           onFocus={() => setShowSuggestions(true)}
           onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
           placeholder={placeholder}
-          className="w-full px-4 py-2 pl-10 bg-[var(--gaming-card)] border border-[var(--gaming-light)]/30 rounded-lg text-[var(--foreground)] placeholder-[var(--gaming-light)] focus:outline-none focus:border-[var(--gaming-primary)] focus:ring-1 focus:ring-[var(--gaming-primary)]"
+          className="w-full px-4 py-2 pr-10 bg-[var(--gaming-card)] border border-[var(--gaming-light)]/30 rounded-lg text-[var(--foreground)] placeholder-[var(--gaming-light)] focus:outline-none focus:border-[var(--gaming-primary)] focus:ring-1 focus:ring-[var(--gaming-primary)]"
         />
         <svg
-          className="absolute left-3 top-2.5 w-5 h-5 text-[var(--gaming-light)]"
+          className="absolute right-3 top-2.5 w-5 h-5 text-[var(--gaming-light)]"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -101,7 +101,7 @@ export default function SearchBar({ placeholder = "Search games...", onSearch }:
               setQuery('');
               handleSearch('');
             }}
-            className="absolute right-3 top-2.5 text-[var(--gaming-light)] hover:text-[var(--foreground)]"
+            className="absolute left-3 top-2.5 text-[var(--gaming-light)] hover:text-[var(--foreground)]"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -122,7 +122,7 @@ export default function SearchBar({ placeholder = "Search games...", onSearch }:
             <button
               key={index}
               onClick={() => handleSuggestionClick(suggestion)}
-              className="w-full text-left px-4 py-2 text-[var(--foreground)] hover:bg-[var(--gaming-card-hover)] first:rounded-t-lg last:rounded-b-lg"
+              className="w-full text-right px-4 py-2 text-[var(--foreground)] hover:bg-[var(--gaming-card-hover)] first:rounded-t-lg last:rounded-b-lg"
             >
               {suggestion}
             </button>

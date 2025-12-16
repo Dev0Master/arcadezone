@@ -37,13 +37,13 @@ export default function GameCard({ game }: GameCardProps) {
             />
           ) : (
             <div className="w-full h-48 bg-[var(--gaming-dark)] flex items-center justify-center">
-              <span className="text-[var(--gaming-light)]">No image</span>
+              <span className="text-[var(--gaming-light)]">لا توجد صورة</span>
             </div>
           )}
 
           {/* Category Badges */}
           {game.categories && game.categories.length > 0 && (
-            <div className="absolute top-2 left-2 flex flex-wrap gap-1">
+            <div className="absolute top-2 right-2 flex flex-wrap gap-1">
               {game.categories.slice(0, 2).map((category) => (
                 <span
                   key={category.id}
@@ -78,7 +78,7 @@ export default function GameCard({ game }: GameCardProps) {
                 {renderStars(game.averageRating)}
               </div>
               <span className="text-xs text-[var(--gaming-light)]">
-                {game.totalRatings} {game.totalRatings === 1 ? 'review' : 'reviews'}
+                {game.totalRatings} {game.totalRatings === 1 ? 'مراجعة' : 'مراجعات'}
               </span>
             </div>
           )}
@@ -86,7 +86,7 @@ export default function GameCard({ game }: GameCardProps) {
           {/* View Details Button */}
           <div className="mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <button className="w-full btn btn-primary py-1 text-sm">
-              View Details
+              عرض التفاصيل
             </button>
           </div>
         </div>

@@ -104,7 +104,7 @@ export default function HomePage() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center p-4">
-        <div className="text-2xl font-semibold text-[var(--gaming-primary)]">Loading games...</div>
+        <div className="text-2xl font-semibold text-[var(--gaming-primary)]">جارٍ تحميل الألعاب...</div>
       </div>
     );
   }
@@ -123,20 +123,20 @@ export default function HomePage() {
               href="/"
               className="text-white hover:text-[var(--gaming-accent)] transition-colors"
             >
-              All Games
+              جميع الألعاب
             </Link>
             <Link
               href="/categories"
               className="text-white hover:text-[var(--gaming-accent)] transition-colors"
             >
-              Categories
+              الفئات
             </Link>
           </div>
 
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-white mb-4">ArcadeZone Game Store</h1>
+            <h1 className="text-4xl font-bold text-white mb-4">متجر أركيد زون للألعاب</h1>
             <p className="text-xl text-[var(--gaming-light)] mb-6">
-              Discover our collection of games
+              اكتشف مجموعتنا من الألعاب
             </p>
 
             {/* Search Bar */}
@@ -153,17 +153,17 @@ export default function HomePage() {
           {/* Results Header */}
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-[var(--foreground)]">
-              {hasActiveFilters ? 'Search Results' : 'All Games'}
+              {hasActiveFilters ? 'نتائج البحث' : 'جميع الألعاب'}
             </h2>
             {hasActiveFilters && (
               <p className="text-[var(--gaming-light)] mt-1">
-                Found {filteredGames.length} game{filteredGames.length !== 1 ? 's' : ''}
+                تم العثور على {filteredGames.length} لعبة
               </p>
             )}
           </div>
 
           {/* Layout with Sidebar */}
-          <div className="flex flex-col lg:flex-row gap-8">
+          <div className="flex flex-col lg:flex-row-reverse gap-8">
             {/* Filter Sidebar */}
             <aside className="lg:w-80 flex-shrink-0">
               <FilterSidebar categories={categories} />
@@ -187,12 +187,12 @@ export default function HomePage() {
               ) : filteredGames.length === 0 ? (
                 <div className="game-card p-8 text-center">
                   <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">
-                    {hasActiveFilters ? 'No games found' : 'No games available'}
+                    {hasActiveFilters ? 'لم يتم العثور على ألعاب' : 'لا توجد ألعاب متاحة'}
                   </h3>
                   <p className="text-[var(--gaming-light)]">
                     {hasActiveFilters
-                      ? 'Try adjusting your filters or search query'
-                      : 'Check back later for new arrivals!'}
+                      ? 'جرب تعديل الفلاتر أو استعلام البحث'
+                      : 'عد لاحقاً للوافدين الجدد!'}
                   </p>
                 </div>
               ) : (
@@ -210,7 +210,7 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="gaming-footer rounded-t-3xl mt-8 p-6">
         <div className="max-w-7xl mx-auto text-center">
-          <p>© {new Date().getFullYear()} ArcadeZone Game Store. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} متجر أركيد زون للألعاب. جميع الحقوق محفوظة.</p>
         </div>
       </footer>
     </div>
