@@ -50,6 +50,14 @@ export default function ReviewCard({
     }).format(new Date(date));
   };
 
+  // Generate avatar URL if not provided
+  const getAvatarUrl = () => {
+    if (review.userAvatar) return review.userAvatar;
+    // Generate deterministic avatar based on user name
+    const seed = review.userName.replace(/\s+/g, '').toLowerCase();
+    return `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`;
+  };
+
   return (
     <div className="game-card p-6">
       {/* Header */}
@@ -61,15 +69,24 @@ export default function ReviewCard({
             </h4>
           )}
           <div className="flex items-center gap-3 mb-2">
-            <span className="font-semibold text-[var(--foreground)]">
-              {review.userName}
-            </span>
-            <StarRating rating={review.rating} readonly size="sm" />
-            {!review.approved && (
-              <span className="px-2 py-1 bg-yellow-500/20 text-yellow-600 text-xs rounded-full">
-                Pending Approval
+            <img
+              src={getAvatarUrl()}
+              alt={review.userName}
+              className="w-10 h-10 rounded-full"
+            />
+            <div className="flex-1">
+              <span className="font-semibold text-[var(--foreground)]">
+                {review.userName}
               </span>
-            )}
+              <div className="flex items-center gap-2 mt-1">
+                <StarRating rating={review.rating} readonly size="sm" />
+                {!review.approved && (
+                  <span className="px-2 py-1 bg-yellow-500/20 text-yellow-600 text-xs rounded-full">
+                    Pending Approval
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
           <p className="text-sm text-[var(--gaming-light)]">
             {formatDate(review.createdAt)}
@@ -118,7 +135,7 @@ export default function ReviewCard({
           <textarea
             value={replyText}
             onChange={(e) => setReplyText(e.target.value)}
-            placeholder="Write a reply to this review..."
+            placeholder="اكتب رداً على هذه المراجعة..."
             className="w-full px-3 py-2 bg-[var(--gaming-dark)] border border-[var(--gaming-light)]/30 rounded-lg text-[var(--foreground)] placeholder-[var(--gaming-light)] focus:outline-none focus:border-[var(--gaming-primary)] resize-none h-24 mb-3"
           />
           <div className="flex gap-2">

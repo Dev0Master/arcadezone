@@ -6,6 +6,7 @@ export interface Game {
   createdAt: Date;
   updatedAt: Date;
   categories?: Category[];
+  platforms?: Platform[];
   averageRating?: number;
   totalRatings?: number;
 }
@@ -17,10 +18,18 @@ export interface Category {
   createdAt: Date;
 }
 
+export interface Platform {
+  id: string;
+  name: string;
+  code: string;
+  createdAt: Date;
+}
+
 export interface Review {
   id: string;
   gameId: string;
   userName: string;
+  userAvatar?: string;
   rating: number;
   reviewText: string;
   approved: boolean;

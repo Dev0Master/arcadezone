@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { title, description, imageUrl } = await request.json();
+    const { title, description, imageUrl, categoryIds, platformIds, initialRating } = await request.json();
 
     if (!title || !description) {
       return Response.json({ error: 'Title and description are required' }, { status: 400 });
@@ -49,6 +49,9 @@ export async function POST(request: NextRequest) {
       title,
       description,
       imageUrl,
+      categoryIds: categoryIds || [],
+      platformIds: platformIds || [],
+      initialRating: initialRating || 0,
     });
 
     return Response.json({ game: newGame, message: 'Game added successfully' });

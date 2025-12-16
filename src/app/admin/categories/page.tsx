@@ -37,7 +37,7 @@ export default function AdminCategoriesPage() {
     e.preventDefault();
 
     if (!formData.name.trim()) {
-      alert('Category name is required');
+      alert('اسم الفئة مطلوب');
       return;
     }
 
@@ -65,14 +65,14 @@ export default function AdminCategoriesPage() {
         setEditingCategory(null);
         // Refresh categories
         await fetchCategories();
-        alert(editingCategory ? 'Category updated successfully!' : 'Category added successfully!');
+        alert(editingCategory ? 'تم تحديث الفئة بنجاح!' : 'تم إضافة الفئة بنجاح!');
       } else {
         const data = await response.json();
-        alert(data.error || 'Failed to save category');
+        alert(data.error || 'فشل في حفظ الفئة');
       }
     } catch (error) {
       console.error('Error saving category:', error);
-      alert('An error occurred. Please try again.');
+      alert('حدث خطأ. يرجى المحاولة مرة أخرى.');
     }
   };
 
@@ -86,7 +86,7 @@ export default function AdminCategoriesPage() {
   };
 
   const handleDelete = async (categoryId: string) => {
-    if (!confirm('Are you sure you want to delete this category? This action cannot be undone.')) {
+    if (!confirm('هل أنت متأكد من حذف هذه الفئة؟ هذا الإجراء لا يمكن التراجع عنه.')) {
       return;
     }
 
@@ -97,14 +97,14 @@ export default function AdminCategoriesPage() {
 
       if (response.ok) {
         await fetchCategories();
-        alert('Category deleted successfully!');
+        alert('تم حذف الفئة بنجاح!');
       } else {
         const data = await response.json();
-        alert(data.error || 'Failed to delete category');
+        alert(data.error || 'فشل في حذف الفئة');
       }
     } catch (error) {
       console.error('Error deleting category:', error);
-      alert('An error occurred. Please try again.');
+      alert('حدث خطأ. يرجى المحاولة مرة أخرى.');
     }
   };
 
@@ -117,7 +117,7 @@ export default function AdminCategoriesPage() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center p-4">
-        <div className="text-2xl font-semibold text-[var(--gaming-primary)]">Loading categories...</div>
+        <div className="text-2xl font-semibold text-[var(--gaming-primary)]">جارٍ تحميل الفئات...</div>
       </div>
     );
   }
@@ -127,36 +127,42 @@ export default function AdminCategoriesPage() {
       {/* Sidebar */}
       <div className="w-64 gaming-sidebar">
         <div className="p-4 border-b border-[var(--gaming-light)]/30">
-          <h1 className="text-xl font-bold text-[var(--gaming-primary)]">Admin Panel</h1>
+          <h1 className="text-xl font-bold text-[var(--gaming-primary)]">لوحة المشرف</h1>
         </div>
         <nav className="p-4">
           <ul className="space-y-2">
             <li>
               <a href="/admin/dashboard" className="block p-2 text-[var(--gaming-light)] hover:bg-[var(--gaming-card-hover)] rounded">
-                Dashboard
+                لوحة التحكم
               </a>
             </li>
             <li>
               <a href="/admin/games/new" className="block p-2 text-[var(--gaming-light)] hover:bg-[var(--gaming-card-hover)] rounded">
-                Add New Game
+                إضافة لعبة جديدة
               </a>
             </li>
             <li>
               <a href="/admin/reviews" className="block p-2 text-[var(--gaming-light)] hover:bg-[var(--gaming-card-hover)] rounded">
-                Reviews Management
+                إدارة المراجعات
               </a>
             </li>
             <li>
               <a href="/admin/categories" className="block p-2 text-[var(--gaming-primary)] font-bold">
-                Categories
+                الفئات
               </a>
             </li>
             <li>
               <button
-                onClick={() => router.push('/login')}
-                className="w-full text-left p-2 text-[var(--gaming-light)] hover:bg-[var(--gaming-card-hover)] rounded"
+                onClick={async () => {
+                  await fetch('/api/admin/logout', {
+                    method: 'POST',
+                  });
+                  router.push('/login');
+                  router.refresh();
+                }}
+                className="w-full text-right p-2 text-[var(--gaming-light)] hover:bg-[var(--gaming-card-hover)] rounded"
               >
-                Logout
+                تسجيل الخروج
               </button>
             </li>
           </ul>
@@ -168,16 +174,16 @@ export default function AdminCategoriesPage() {
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-[var(--foreground)] mb-2">Category Management</h2>
+            <h2 className="text-2xl font-bold text-[var(--foreground)] mb-2">إدارة الفئات</h2>
             <p className="text-[var(--gaming-light)]">
-              Manage game categories for organizing your game collection
+              إدارة فئات الألعاب لتنظيم مجموعة الألعاب الخاصة بك
             </p>
           </div>
           <button
             onClick={() => setShowAddForm(true)}
             className="btn btn-primary"
           >
-            Add New Category
+            إضافة فئة جديدة
           </button>
         </div>
 
@@ -185,41 +191,41 @@ export default function AdminCategoriesPage() {
         {showAddForm && (
           <div className="game-card p-6 mb-6">
             <h3 className="text-lg font-bold text-[var(--foreground)] mb-4">
-              {editingCategory ? 'Edit Category' : 'Add New Category'}
+              {editingCategory ? 'تعديل الفئة' : 'إضافة فئة جديدة'}
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-[var(--gaming-light)] mb-1">
-                  Category Name *
+                  اسم الفئة *
                 </label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="input-field"
-                  placeholder="e.g., Action, Adventure, RPG"
+                  placeholder="مثال: أكشن، مغامرة، تقمص الأدوار"
                   required
                   maxLength={50}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-[var(--gaming-light)] mb-1">
-                  Description
+                  الوصف
                 </label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   className="input-field h-24 resize-none"
-                  placeholder="Brief description of this category..."
+                  placeholder="وصف موجز لهذه الفئة..."
                   maxLength={200}
                 />
               </div>
               <div className="flex gap-2">
                 <button type="submit" className="btn btn-primary">
-                  {editingCategory ? 'Update Category' : 'Add Category'}
+                  {editingCategory ? 'تحديث الفئة' : 'إضافة الفئة'}
                 </button>
                 <button type="button" onClick={cancelForm} className="btn btn-outline">
-                  Cancel
+                  إلغاء
                 </button>
               </div>
             </form>
@@ -229,15 +235,15 @@ export default function AdminCategoriesPage() {
         {/* Categories List */}
         {categories.length === 0 ? (
           <div className="game-card p-12 text-center">
-            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">No Categories Yet</h3>
+            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">لا توجد فئات بعد</h3>
             <p className="text-[var(--gaming-light)] mb-6">
-              Start organizing your games by creating categories.
+              ابدأ في تنظيم ألعابك عن طريق إنشاء فئات.
             </p>
             <button
               onClick={() => setShowAddForm(true)}
               className="btn btn-primary"
             >
-              Create Your First Category
+              أنشئ أول فئة لك
             </button>
           </div>
         ) : (
@@ -258,20 +264,20 @@ export default function AdminCategoriesPage() {
                   )}
                   <div className="flex justify-between items-center">
                     <span className="text-xs text-[var(--gaming-light)]">
-                      Created: {new Date(category.createdAt).toLocaleDateString()}
+                      إنشاء: {new Date(category.createdAt).toLocaleDateString()}
                     </span>
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleEdit(category)}
                         className="text-[var(--gaming-primary)] hover:text-[var(--gaming-accent)] text-sm"
                       >
-                        Edit
+                        تعديل
                       </button>
                       <button
                         onClick={() => handleDelete(category.id)}
                         className="text-[var(--gaming-danger)] hover:text-red-400 text-sm"
                       >
-                        Delete
+                        حذف
                       </button>
                     </div>
                   </div>

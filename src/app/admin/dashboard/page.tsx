@@ -46,9 +46,7 @@ export default function AdminDashboard() {
         method: 'POST',
       });
 
-      // Clear the auth cookie
-      document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-
+      // The server will clear the HTTP-only auth token cookie
       router.push('/login');
       router.refresh();
     } catch (error) {

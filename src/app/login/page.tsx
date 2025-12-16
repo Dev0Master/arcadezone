@@ -22,12 +22,7 @@ export default function LoginPage() {
       });
 
       if (response.ok) {
-        // Create a simple auth token (timestamp-based) to store in cookie
-        const authToken = `auth_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
-        // Store the auth token in a cookie
-        document.cookie = `auth_token=${authToken}; path=/; max-age=86400; SameSite=Strict`;
-
+        // The server will set the HTTP-only auth token cookie
         router.push('/admin/dashboard');
         router.refresh();
       } else {

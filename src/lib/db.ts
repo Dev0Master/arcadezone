@@ -1,4 +1,4 @@
-import { Game, AdminUser, Category, Review, Rating } from './types';
+import { Game, AdminUser, Category, Review, Rating, Platform } from './types';
 import { hashPassword } from './auth';
 import { supabase } from './supabase';
 
@@ -47,9 +47,9 @@ export const db = {
     };
   },
 
-  async addGame(game: Omit<Game, 'id' | 'createdAt' | 'updatedAt'>): Promise<Game> {
-    // Insert the new game and return the created record
-    const { data, error } = await supabase
+  async addGame(game: Omit<Game, 'id' | 'createdAt' | 'updatedAt'> & { categoryIds?: string[]; platformIds?: string[]; initialRating?: number }): Promise<Game> {
+    // Use a transaction to ensure all operations succeed or fail together
+    const { data: newGame, error: gameError } = await supabase
       .from('games')
       .insert([
         {
@@ -61,18 +61,72 @@ export const db = {
       .select()
       .single();
 
-    if (error) {
-      console.error('Error adding game:', error);
-      throw error;
+    if (gameError) {
+      console.error('Error adding game:', gameError);
+      throw gameError;
+    }
+
+    // Handle categories if provided
+    if (game.categoryIds && game.categoryIds.length > 0) {
+      const categoryEntries = game.categoryIds.map(categoryId => ({
+        game_id: newGame.id,
+        category_id: categoryId,
+      }));
+
+      const { error: categoryError } = await supabase
+        .from('game_categories')
+        .insert(categoryEntries);
+
+      if (categoryError) {
+        console.error('Error adding game categories:', categoryError);
+        // Delete the game if category assignment fails
+        await supabase.from('games').delete().eq('id', newGame.id);
+        throw categoryError;
+      }
+    }
+
+    // Handle platforms if provided
+    if (game.platformIds && game.platformIds.length > 0) {
+      const platformEntries = game.platformIds.map(platformId => ({
+        game_id: newGame.id,
+        platform_id: platformId,
+      }));
+
+      const { error: platformError } = await supabase
+        .from('game_platforms')
+        .insert(platformEntries);
+
+      if (platformError) {
+        console.error('Error adding game platforms:', platformError);
+        // Don't fail the operation if platform assignment fails, just log it
+      }
+    }
+
+    // Handle initial rating if provided and greater than 0
+    if (game.initialRating && game.initialRating > 0) {
+      const { error: ratingError } = await supabase
+        .from('ratings')
+        .insert([
+          {
+            game_id: newGame.id,
+            average_rating: game.initialRating,
+            total_ratings: 1,
+          },
+        ]);
+
+      if (ratingError) {
+        console.error('Error adding initial rating:', ratingError);
+        // Don't fail the entire operation if rating fails, just log it
+      }
     }
 
     return {
-      id: data.id,
-      title: data.title,
-      description: data.description,
-      imageUrl: data.image_url || undefined,
-      createdAt: new Date(data.created_at),
-      updatedAt: new Date(data.updated_at),
+      id: newGame.id,
+      title: newGame.title,
+      description: newGame.description,
+      imageUrl: newGame.image_url || undefined,
+      createdAt: new Date(newGame.created_at),
+      updatedAt: new Date(newGame.updated_at),
     };
   },
 
@@ -427,6 +481,45 @@ export const db = {
         description: cat.description,
         createdAt: new Date(cat.created_at),
       })) || [],
+    }));
+  },
+
+  // Platform operations (read-only)
+  async getPlatforms(): Promise<Platform[]> {
+    const { data, error } = await supabase
+      .from('platforms')
+      .select('*')
+      .order('name');
+
+    if (error) {
+      console.error('Error fetching platforms:', error);
+      // Return predefined platforms if database is not set up yet
+      return [
+        { id: 'pc', name: 'PC', code: 'PC', createdAt: new Date() },
+        { id: 'ps4', name: 'PlayStation 4', code: 'PS4', createdAt: new Date() },
+        { id: 'ps5', name: 'PlayStation 5', code: 'PS5', createdAt: new Date() },
+        { id: 'xbox-one', name: 'Xbox One', code: 'XONE', createdAt: new Date() },
+        { id: 'xbox-series', name: 'Xbox Series X/S', code: 'XSX', createdAt: new Date() },
+        { id: 'switch', name: 'Nintendo Switch', code: 'SWITCH', createdAt: new Date() },
+        { id: 'steam', name: 'Steam', code: 'STEAM', createdAt: new Date() },
+        { id: 'epic', name: 'Epic Games Store', code: 'EPIC', createdAt: new Date() },
+        { id: 'psp', name: 'PSP', code: 'PSP', createdAt: new Date() },
+        { id: 'ps-vita', name: 'PS Vita', code: 'PSVITA', createdAt: new Date() },
+        { id: 'mobile-ios', name: 'Mobile (iOS)', code: 'IOS', createdAt: new Date() },
+        { id: 'mobile-android', name: 'Mobile (Android)', code: 'ANDROID', createdAt: new Date() },
+        { id: 'stadia', name: 'Stadia', code: 'STADIA', createdAt: new Date() },
+        { id: 'gog', name: 'GOG', code: 'GOG', createdAt: new Date() },
+        { id: 'origin', name: 'Origin', code: 'ORIGIN', createdAt: new Date() },
+        { id: 'uplay', name: 'Uplay', code: 'UPLAY', createdAt: new Date() },
+        { id: 'battle-net', name: 'Battle.net', code: 'BLIZZ', createdAt: new Date() },
+      ];
+    }
+
+    return data.map((row: any) => ({
+      id: row.id,
+      name: row.name,
+      code: row.code,
+      createdAt: new Date(row.created_at),
     }));
   },
 

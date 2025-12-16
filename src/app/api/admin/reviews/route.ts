@@ -1,24 +1,30 @@
 import { NextRequest } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
 
 export async function GET(request: NextRequest) {
   try {
+    // Log request details for debugging
+    console.log('Admin reviews API called');
+    console.log('URL:', request.url);
+
     // Check authentication
     const authCookie = request.headers.get('cookie');
-    let hasAuthToken = false;
+    console.log('Auth cookie present:', !!authCookie);
+    let isValidAuthToken = false;
 
     if (authCookie) {
       const cookies = authCookie.split(';');
       for (const cookie of cookies) {
         const [name, value] = cookie.trim().split('=');
-        if (name === 'auth_token') {
-          hasAuthToken = true;
+        if (name === 'auth_token' && value && value.startsWith('auth_')) {
+          // Basic validation: token should start with 'auth_' and have some content
+          isValidAuthToken = true;
           break;
         }
       }
     }
 
-    if (!hasAuthToken) {
+    if (!isValidAuthToken) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -26,7 +32,7 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status'); // 'all', 'pending', 'approved'
     const sort = searchParams.get('sort') || 'newest';
 
-    let query = supabase
+    let query = supabaseAdmin
       .from('reviews')
       .select(`
         *,
@@ -58,7 +64,17 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('Error fetching reviews:', error);
-      return Response.json({ error: 'Failed to fetch reviews' }, { status: 500 });
+      console.error('Error details:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      });
+      return Response.json({
+        error: 'Failed to fetch reviews',
+        details: error.message,
+        code: error.code
+      }, { status: 500 });
     }
 
     // Format the response

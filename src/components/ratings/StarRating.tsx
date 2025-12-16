@@ -70,7 +70,7 @@ export default function StarRating({
                   ? 'cursor-default'
                   : 'cursor-pointer hover:scale-110 transform transition-transform'
               }`}
-              title={readonly ? `${currentRating} stars` : `Rate ${starValue} star${starValue > 1 ? 's' : ''}`}
+              title={readonly ? `${currentRating} نجوم` : `قيم ${starValue} نجوم`}
             >
               <span
                 className={`relative inline-block ${

@@ -9,20 +9,21 @@ export async function DELETE(
   try {
     // Check authentication
     const authCookie = request.headers.get('cookie');
-    let hasAuthToken = false;
+    let isValidAuthToken = false;
 
     if (authCookie) {
       const cookies = authCookie.split(';');
       for (const cookie of cookies) {
         const [name, value] = cookie.trim().split('=');
-        if (name === 'auth_token') {
-          hasAuthToken = true;
+        if (name === 'auth_token' && value && value.startsWith('auth_')) {
+          // Basic validation: token should start with 'auth_' and have some content
+          isValidAuthToken = true;
           break;
         }
       }
     }
 
-    if (!hasAuthToken) {
+    if (!isValidAuthToken) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

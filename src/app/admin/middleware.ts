@@ -8,23 +8,24 @@ export function middleware(request: NextRequest) {
       return NextResponse.next();
     }
 
-    // For all other admin routes, check for the presence of auth token cookie
+    // For all other admin routes, check for the presence of valid auth token cookie
     const authCookie = request.headers.get('cookie');
-    let hasAuthToken = false;
+    let hasValidAuthToken = false;
 
     if (authCookie) {
       const cookies = authCookie.split(';');
       for (const cookie of cookies) {
         const [name, value] = cookie.trim().split('=');
-        if (name === 'auth_token') {
-          hasAuthToken = true;
+        if (name === 'auth_token' && value && value.startsWith('auth_')) {
+          // Basic validation: token should start with 'auth_' and have some content
+          hasValidAuthToken = true;
           break;
         }
       }
     }
 
-    // Redirect to login if no auth token is found
-    if (!hasAuthToken) {
+    // Redirect to login if no valid auth token is found
+    if (!hasValidAuthToken) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
   }

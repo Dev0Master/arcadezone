@@ -7,7 +7,7 @@ export default function SuspenseWrapper() {
   return (
     <Suspense fallback={
       <div className="flex min-h-screen items-center justify-center p-4">
-        <div className="text-2xl font-semibold text-[var(--gaming-primary)]">Loading...</div>
+        <div className="text-2xl font-semibold text-[var(--gaming-primary)]">جارٍ التحميل...</div>
       </div>
     }>
       <HomePage />

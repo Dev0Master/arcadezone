@@ -59,6 +59,25 @@ export default function GameCard({ game }: GameCardProps) {
               )}
             </div>
           )}
+
+          {/* Platform Badges */}
+          {game.platforms && game.platforms.length > 0 && (
+            <div className="absolute bottom-2 left-2 flex flex-wrap gap-1">
+              {game.platforms.slice(0, 3).map((platform) => (
+                <span
+                  key={platform.id}
+                  className="px-2 py-1 bg-[var(--gaming-primary)]/80 backdrop-blur-sm text-white text-xs rounded"
+                >
+                  {platform.code}
+                </span>
+              ))}
+              {game.platforms.length > 3 && (
+                <span className="px-2 py-1 bg-[var(--gaming-primary)]/80 backdrop-blur-sm text-white text-xs rounded">
+                  +{game.platforms.length - 3}
+                </span>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Game Info */}

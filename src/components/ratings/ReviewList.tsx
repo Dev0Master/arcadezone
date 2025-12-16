@@ -189,20 +189,20 @@ export default function ReviewList({
                 {averageRating.toFixed(1)}
               </div>
               <p className="text-[var(--gaming-light)]">
-                Based on {reviews.length} review{reviews.length !== 1 ? 's' : ''}
+                بناءً على {reviews.length} {reviews.length !== 1 ? 'مراجعة' : 'مراجعة'}
               </p>
             </div>
-            <div className="text-right">
-              <div className="text-sm text-[var(--gaming-light)] mb-1">Sort by:</div>
+            <div className="text-left">
+              <div className="text-sm text-[var(--gaming-light)] mb-1">ترتيب حسب:</div>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
                 className="px-3 py-1 bg-[var(--gaming-dark)] border border-[var(--gaming-light)]/30 rounded text-[var(--foreground)]"
               >
-                <option value="newest">Newest First</option>
-                <option value="oldest">Oldest First</option>
-                <option value="highest">Highest Rated</option>
-                <option value="lowest">Lowest Rated</option>
+                <option value="newest">الأحدث أولاً</option>
+                <option value="oldest">الأقدم أولاً</option>
+                <option value="highest">الأعلى تقييماً</option>
+                <option value="lowest">الأقل تقييماً</option>
               </select>
             </div>
           </div>

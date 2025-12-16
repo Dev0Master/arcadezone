@@ -19,11 +19,20 @@ export async function POST(request: NextRequest) {
         return Response.json({ error: 'User not found' }, { status: 401 });
       }
 
-      // Return success without creating a specific session
-      return Response.json({
+      // Create a secure auth token (timestamp-based)
+      const authToken = `auth_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+      // Set HTTP-only cookie with auth token
+      const response = Response.json({
         success: true,
         message: 'Login successful'
       });
+
+      response.headers.set('Set-Cookie',
+        `auth_token=${authToken}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=86400`
+      );
+
+      return response;
     } else {
       return Response.json({ error: 'Invalid credentials' }, { status: 401 });
     }
