@@ -32,10 +32,10 @@ export default function LoginPage() {
         router.refresh();
       } else {
         const data = await response.json();
-        setError(data.error || 'Invalid credentials');
+        setError(data.error || 'بيانات الاعتماد غير صالحة');
       }
     } catch (err) {
-      setError('An error occurred during login');
+      setError('حدث خطأ أثناء تسجيل الدخول');
       console.error(err);
     }
   };
@@ -44,7 +44,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center p-4">
       <div className="w-full max-w-md game-card p-8">
         <div className="gaming-header rounded-t-xl -m-8 mb-6">
-          <h1 className="text-2xl font-bold text-white">Admin Login</h1>
+          <h1 className="text-2xl font-bold text-white">تسجيل دخول المشرف</h1>
         </div>
 
         {error && (
@@ -56,7 +56,7 @@ export default function LoginPage() {
         <form onSubmit={handleLogin}>
           <div className="mb-4">
             <label htmlFor="username" className="block text-sm font-medium text-[var(--gaming-light)] mb-1">
-              Username
+              اسم المستخدم
             </label>
             <input
               id="username"
@@ -70,7 +70,7 @@ export default function LoginPage() {
 
           <div className="mb-6">
             <label htmlFor="password" className="block text-sm font-medium text-[var(--gaming-light)] mb-1">
-              Password
+              كلمة المرور
             </label>
             <input
               id="password"
@@ -86,12 +86,12 @@ export default function LoginPage() {
             type="submit"
             className="w-full btn btn-primary"
           >
-            Sign In
+            تسجيل الدخول
           </button>
         </form>
 
         <p className="mt-4 text-center text-sm text-[var(--gaming-light)]">
-          Default credentials: admin / admin123
+          بيانات الاعتماد الافتراضية: admin / admin123
         </p>
       </div>
     </div>

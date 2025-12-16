@@ -30,7 +30,7 @@ export default function CategoriesPage() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center p-4">
-        <div className="text-2xl font-semibold text-[var(--gaming-primary)]">Loading categories...</div>
+        <div className="text-2xl font-semibold text-[var(--gaming-primary)]">جارٍ تحميل الفئات...</div>
       </div>
     );
   }
@@ -43,11 +43,11 @@ export default function CategoriesPage() {
           href="/"
           className="text-[var(--gaming-primary)] hover:text-[var(--gaming-accent)] flex items-center gap-2 mb-4"
         >
-          ← Back to Games
+          → العودة للألعاب
         </Link>
-        <h1 className="text-4xl font-bold text-[var(--foreground)] mb-2">Game Categories</h1>
+        <h1 className="text-4xl font-bold text-[var(--foreground)] mb-2">فئات الألعاب</h1>
         <p className="text-[var(--gaming-light)]">
-          Browse games by category to find exactly what you're looking for
+          تصفح الألعاب حسب الفئة للعثور على ما تبحث عنه بالضبط
         </p>
       </div>
 
@@ -55,9 +55,9 @@ export default function CategoriesPage() {
       <div className="flex-grow">
         {categories.length === 0 ? (
           <div className="game-card p-12 text-center">
-            <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4">No Categories Yet</h2>
+            <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4">لا توجد فئات بعد</h2>
             <p className="text-[var(--gaming-light)]">
-              Categories will be available once games are organized by type.
+              ستتوفر الفئات بمجرد تنظيم الألعاب حسب النوع.
             </p>
           </div>
         ) : (
@@ -76,10 +76,10 @@ export default function CategoriesPage() {
                     )}
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-[var(--gaming-primary)]">
-                        Browse games
+                        تصفح الألعاب
                       </span>
                       <svg
-                        className="w-5 h-5 text-[var(--gaming-primary)] transform transition-transform duration-300 group-hover:translate-x-2"
+                        className="w-5 h-5 text-[var(--gaming-primary)] transform transition-transform duration-300 group-hover:-translate-x-2"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -88,7 +88,7 @@ export default function CategoriesPage() {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth={2}
-                          d="M9 5l7 7-7 7"
+                          d="M15 19l-7-7 7-7"
                         />
                       </svg>
                     </div>
@@ -103,7 +103,7 @@ export default function CategoriesPage() {
       {/* Footer */}
       <footer className="gaming-footer rounded-t-3xl mt-8 p-6">
         <div className="max-w-7xl mx-auto text-center">
-          <p>© {new Date().getFullYear()} ArcadeZone Game Store. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} متجر أركيد زون للألعاب. جميع الحقوق محفوظة.</p>
         </div>
       </footer>
     </div>

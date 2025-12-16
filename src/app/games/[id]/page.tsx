@@ -65,7 +65,7 @@ export default function GameDetailPage() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center p-4">
-        <div className="text-2xl font-semibold text-[var(--gaming-primary)]">Loading game...</div>
+        <div className="text-2xl font-semibold text-[var(--gaming-primary)]">جارٍ تحميل اللعبة...</div>
       </div>
     );
   }
@@ -74,9 +74,9 @@ export default function GameDetailPage() {
     return (
       <div className="flex min-h-screen items-center justify-center p-4">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-[var(--foreground)] mb-4">Game Not Found</h1>
+          <h1 className="text-2xl font-bold text-[var(--foreground)] mb-4">اللعبة غير موجودة</h1>
           <button onClick={() => router.push('/')} className="btn btn-primary">
-            Back to Games
+            العودة للألعاب
           </button>
         </div>
       </div>
@@ -90,7 +90,7 @@ export default function GameDetailPage() {
           onClick={() => router.push('/')}
           className="text-[var(--gaming-primary)] hover:text-[var(--gaming-accent)] flex items-center gap-2"
         >
-          ← Back to Games
+          → العودة للألعاب
         </button>
       </div>
 
@@ -125,7 +125,7 @@ export default function GameDetailPage() {
                   <div className="flex items-center gap-3 mb-4">
                     <StarRating rating={game.averageRating} readonly showValue />
                     <span className="text-[var(--gaming-light)]">
-                      ({game.totalRatings} review{game.totalRatings !== 1 ? 's' : ''})
+                      ({game.totalRatings} {game.totalRatings !== 1 ? 'مراجعة' : 'مراجعة'})
                     </span>
                   </div>
                 )}
@@ -138,12 +138,12 @@ export default function GameDetailPage() {
 
           {/* Reviews Section */}
           <div>
-            <h2 className="text-2xl font-bold text-[var(--foreground)] mb-6">Reviews</h2>
+            <h2 className="text-2xl font-bold text-[var(--foreground)] mb-6">المراجعات</h2>
 
             {/* Success Message */}
             {reviewSubmitted && (
               <div className="mb-6 p-4 bg-green-500/20 border border-green-500 text-green-600 rounded-lg">
-                Review submitted successfully! It will be visible after admin approval.
+                تم إرسال المراجعة بنجاح! ستظهر بعد موافقة المشرف.
               </div>
             )}
 
@@ -164,17 +164,17 @@ export default function GameDetailPage() {
         <div className="space-y-6">
           {/* Game Info Card */}
           <div className="game-card p-6">
-            <h3 className="text-lg font-bold text-[var(--foreground)] mb-4">Game Information</h3>
+            <h3 className="text-lg font-bold text-[var(--foreground)] mb-4">معلومات اللعبة</h3>
             <div className="space-y-3">
               <div>
-                <span className="text-[var(--gaming-light)]">Released:</span>
-                <span className="ml-2 text-[var(--foreground)]">
+                <span className="text-[var(--gaming-light)]">تاريخ الإصدار:</span>
+                <span className="mr-2 text-[var(--foreground)]">
                   {new Date(game.createdAt).toLocaleDateString()}
                 </span>
               </div>
               {game.categories && game.categories.length > 0 && (
                 <div>
-                  <span className="text-[var(--gaming-light)]">Categories:</span>
+                  <span className="text-[var(--gaming-light)]">الفئات:</span>
                   <div className="mt-1 flex flex-wrap gap-1">
                     {game.categories.map((category) => (
                       <span
@@ -193,7 +193,7 @@ export default function GameDetailPage() {
           {/* Rating Summary */}
           {game.averageRating && (
             <div className="game-card p-6">
-              <h3 className="text-lg font-bold text-[var(--foreground)] mb-4">Rating Summary</h3>
+              <h3 className="text-lg font-bold text-[var(--foreground)] mb-4">ملخص التقييم</h3>
               <div className="text-center">
                 <div className="text-4xl font-bold text-[var(--gaming-primary)] mb-2">
                   {game.averageRating.toFixed(1)}
@@ -202,7 +202,7 @@ export default function GameDetailPage() {
                   <StarRating rating={game.averageRating} readonly size="md" />
                 </div>
                 <p className="text-[var(--gaming-light)]">
-                  Based on {game.totalRatings} review{game.totalRatings !== 1 ? 's' : ''}
+                  بناءً على {game.totalRatings} {game.totalRatings !== 1 ? 'مراجعة' : 'مراجعة'}
                 </p>
               </div>
             </div>
