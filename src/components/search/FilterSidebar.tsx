@@ -3,6 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Category } from '@/lib/types';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
 
 interface FilterSidebarProps {
   categories?: Category[];
@@ -111,78 +115,82 @@ export default function FilterSidebar({
         {loading ? (
           <div className="text-[var(--gaming-light)]">جارٍ تحميل الفئات...</div>
         ) : (
-          <select
+          <Select
             value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="w-full px-3 py-2 bg-[var(--gaming-dark)] border border-[var(--gaming-light)]/30 rounded-lg text-[var(--foreground)] focus:outline-none focus:border-[var(--gaming-primary)]"
+            onValueChange={(value) => setSelectedCategory(value)}
           >
-            <option value="">جميع الفئات</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="w-full" variant="gaming" dir="rtl">
+              <SelectValue placeholder="جميع الفئات" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">جميع الفئات</SelectItem>
+              {categories.map((category) => (
+                <SelectItem key={category.id} value={category.id}>
+                  {category.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         )}
       </div>
 
       {/* Rating Filter */}
       <div className="mb-6">
         <h4 className="text-sm font-semibold text-[var(--foreground)] mb-3">الحد الأدنى للتقييم</h4>
-        <div className="space-y-2">
+        <RadioGroup
+          value={minRating.toString()}
+          onValueChange={(value) => setMinRating(Number(value))}
+          dir="rtl"
+          className="space-y-2"
+        >
           {[4, 3, 2, 1].map((rating) => (
-            <label key={rating} className="flex items-center cursor-pointer">
-              <input
-                type="radio"
-                name="rating"
-                value={rating}
-                checked={minRating === rating}
-                onChange={() => setMinRating(rating)}
-                className="ml-2"
-              />
-              <span className="flex items-center">
-                {Array.from({ length: 5 }, (_, i) => (
-                  <span
-                    key={i}
-                    className={`text-sm ${i < rating ? 'text-yellow-400' : 'text-gray-600'}`}
-                  >
-                    ★
-                  </span>
-                ))}
+            <div key={rating} className="flex items-center space-x-reverse space-x-2">
+              <RadioGroupItem value={rating.toString()} id={`rating-${rating}`} variant="gaming-accent" />
+              <Label
+                htmlFor={`rating-${rating}`}
+                className="flex items-center cursor-pointer text-sm"
+              >
+                <span className="flex items-center ml-2">
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <span
+                      key={i}
+                      className={`text-sm ${i < rating ? 'text-yellow-400' : 'text-gray-600'}`}
+                    >
+                      ★
+                    </span>
+                  ))}
+                </span>
                 <span className="mr-2 text-[var(--gaming-light)] text-sm">
                   فما فوق
                 </span>
-              </span>
-            </label>
+              </Label>
+            </div>
           ))}
-          <label className="flex items-center cursor-pointer">
-            <input
-              type="radio"
-              name="rating"
-              value="0"
-              checked={minRating === 0}
-              onChange={() => setMinRating(0)}
-              className="ml-2"
-            />
-            <span className="text-[var(--gaming-light)] text-sm">جميع التقييمات</span>
-          </label>
-        </div>
+          <div className="flex items-center space-x-reverse space-x-2">
+            <RadioGroupItem value="0" id="rating-all" variant="gaming-accent" />
+            <Label htmlFor="rating-all" className="cursor-pointer text-sm text-[var(--gaming-light)]">
+              جميع التقييمات
+            </Label>
+          </div>
+        </RadioGroup>
       </div>
 
       {/* Action Buttons */}
       <div className="flex gap-2">
-        <button
+        <Button
           onClick={applyFilters}
-          className="flex-1 btn btn-primary py-2"
+          variant="gaming"
+          className="flex-1"
         >
           تطبيق الفلاتر
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={clearFilters}
-          className="flex-1 btn btn-outline py-2"
+          variant="gaming-outline"
+          className="flex-1"
         >
           مسح
-        </button>
+        </Button>
       </div>
 
       {/* Active Filters Display */}
