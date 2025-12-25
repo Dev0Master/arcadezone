@@ -22,7 +22,7 @@ export default function FilterSidebar({
   onFiltersChange,
 }: FilterSidebarProps) {
   const [categories, setCategories] = useState<Category[]>(initialCategories);
-  const [selectedCategory, setSelectedCategory] = useState(initialSelectedCategory || '');
+  const [selectedCategory, setSelectedCategory] = useState(initialSelectedCategory || 'all');
   const [minRating, setMinRating] = useState(initialMinRating || 0);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -36,6 +36,8 @@ export default function FilterSidebar({
 
     if (urlCategory) {
       setSelectedCategory(urlCategory);
+    } else {
+      setSelectedCategory('all');
     }
     if (urlRating) {
       setMinRating(Number(urlRating));
@@ -59,7 +61,7 @@ export default function FilterSidebar({
 
   const applyFilters = () => {
     const filters = {
-      category: selectedCategory || undefined,
+      category: selectedCategory !== 'all' ? selectedCategory : undefined,
       minRating: minRating > 0 ? minRating : undefined,
     };
 
@@ -86,7 +88,7 @@ export default function FilterSidebar({
   };
 
   const clearFilters = () => {
-    setSelectedCategory('');
+    setSelectedCategory('all');
     setMinRating(0);
     const filters = { category: undefined, minRating: undefined };
 
@@ -123,7 +125,7 @@ export default function FilterSidebar({
               <SelectValue placeholder="جميع الفئات" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">جميع الفئات</SelectItem>
+              <SelectItem value="all">جميع الفئات</SelectItem>
               {categories.map((category) => (
                 <SelectItem key={category.id} value={category.id}>
                   {category.name}
@@ -194,11 +196,11 @@ export default function FilterSidebar({
       </div>
 
       {/* Active Filters Display */}
-      {(selectedCategory || minRating > 0) && (
+      {(selectedCategory !== 'all' || minRating > 0) && (
         <div className="mt-4 pt-4 border-t border-[var(--gaming-light)]/20">
           <h4 className="text-sm font-semibold text-[var(--foreground)] mb-2">الفلاتر النشطة:</h4>
           <div className="flex flex-wrap gap-2">
-            {selectedCategory && (
+            {selectedCategory !== 'all' && (
               <span className="px-2 py-1 bg-[var(--gaming-primary)] text-white text-xs rounded-full">
                 {categories.find(c => c.id === selectedCategory)?.name || selectedCategory}
               </span>
