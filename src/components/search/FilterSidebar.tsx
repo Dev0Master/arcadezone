@@ -108,111 +108,158 @@ export default function FilterSidebar({
   };
 
   return (
-    <div className="bg-[var(--gaming-card)] rounded-lg p-6 sticky top-4">
-      <h3 className="text-lg font-bold text-[var(--foreground)] mb-4">الفلاتر</h3>
+    <div className="rounded-2xl bg-gradient-to-b from-[var(--gaming-card-bg)] to-[var(--gaming-dark)] border border-white/5 overflow-hidden">
+      {/* Header */}
+      <div className="p-5 border-b border-white/5 bg-gradient-to-r from-[var(--gaming-primary)]/10 to-[var(--gaming-secondary)]/10">
+        <h3 className="text-lg font-bold text-white flex items-center gap-2">
+          <span className="w-8 h-8 rounded-lg bg-[var(--gaming-primary)]/20 flex items-center justify-center">🎛️</span>
+          الفلاتر
+        </h3>
+      </div>
 
-      {/* Categories Filter */}
-      <div className="mb-6">
-        <h4 className="text-sm font-semibold text-[var(--foreground)] mb-3">الفئات</h4>
-        {loading ? (
-          <div className="text-[var(--gaming-light)]">جارٍ تحميل الفئات...</div>
-        ) : (
-          <Select
-            value={selectedCategory}
-            onValueChange={(value) => setSelectedCategory(value)}
-          >
-            <SelectTrigger className="w-full" variant="gaming" dir="rtl">
-              <SelectValue placeholder="جميع الفئات" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">جميع الفئات</SelectItem>
-              {categories.map((category) => (
-                <SelectItem key={category.id} value={category.id}>
-                  {category.name}
-                </SelectItem>
+      <div className="p-5 space-y-6">
+        {/* Categories Filter */}
+        <div>
+          <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+            <span>📂</span>
+            الفئات
+          </h4>
+          {loading ? (
+            <div className="space-y-2">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-10 rounded-xl bg-white/5 animate-pulse" />
               ))}
-            </SelectContent>
-          </Select>
-        )}
-      </div>
-
-      {/* Rating Filter */}
-      <div className="mb-6">
-        <h4 className="text-sm font-semibold text-[var(--foreground)] mb-3">الحد الأدنى للتقييم</h4>
-        <RadioGroup
-          value={minRating.toString()}
-          onValueChange={(value) => setMinRating(Number(value))}
-          dir="rtl"
-          className="space-y-2"
-        >
-          {[4, 3, 2, 1].map((rating) => (
-            <div key={rating} className="flex items-center space-x-reverse space-x-2">
-              <RadioGroupItem value={rating.toString()} id={`rating-${rating}`} variant="gaming-accent" />
-              <Label
-                htmlFor={`rating-${rating}`}
-                className="flex items-center cursor-pointer text-sm"
-              >
-                <span className="flex items-center ml-2">
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <span
-                      key={i}
-                      className={`text-sm ${i < rating ? 'text-yellow-400' : 'text-gray-600'}`}
-                    >
-                      ★
-                    </span>
-                  ))}
-                </span>
-                <span className="mr-2 text-[var(--gaming-light)] text-sm">
-                  فما فوق
-                </span>
-              </Label>
             </div>
-          ))}
-          <div className="flex items-center space-x-reverse space-x-2">
-            <RadioGroupItem value="0" id="rating-all" variant="gaming-accent" />
-            <Label htmlFor="rating-all" className="cursor-pointer text-sm text-[var(--gaming-light)]">
-              جميع التقييمات
-            </Label>
-          </div>
-        </RadioGroup>
-      </div>
+          ) : (
+            <div className="space-y-2">
+              <button
+                onClick={() => setSelectedCategory('all')}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+                  selectedCategory === 'all'
+                    ? 'bg-gradient-to-r from-[var(--gaming-primary)] to-[var(--gaming-secondary)] text-white shadow-lg shadow-[var(--gaming-primary)]/20'
+                    : 'bg-white/5 text-[var(--gaming-light)]/70 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                <span className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center text-sm">🎮</span>
+                <span>جميع الفئات</span>
+                {selectedCategory === 'all' && (
+                  <span className="mr-auto w-2 h-2 rounded-full bg-white animate-pulse" />
+                )}
+              </button>
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => setSelectedCategory(category.id)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+                    selectedCategory === category.id
+                      ? 'bg-gradient-to-r from-[var(--gaming-primary)] to-[var(--gaming-secondary)] text-white shadow-lg shadow-[var(--gaming-primary)]/20'
+                      : 'bg-white/5 text-[var(--gaming-light)]/70 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  <span className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center text-sm">🏷️</span>
+                  <span>{category.name}</span>
+                  {selectedCategory === category.id && (
+                    <span className="mr-auto w-2 h-2 rounded-full bg-white animate-pulse" />
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
 
-      {/* Action Buttons */}
-      <div className="flex gap-2">
-        <Button
-          onClick={applyFilters}
-          variant="gaming"
-          className="flex-1"
-        >
-          تطبيق الفلاتر
-        </Button>
-        <Button
-          onClick={clearFilters}
-          variant="gaming-outline"
-          className="flex-1"
-        >
-          مسح
-        </Button>
-      </div>
-
-      {/* Active Filters Display */}
-      {(selectedCategory !== 'all' || minRating > 0) && (
-        <div className="mt-4 pt-4 border-t border-[var(--gaming-light)]/20">
-          <h4 className="text-sm font-semibold text-[var(--foreground)] mb-2">الفلاتر النشطة:</h4>
-          <div className="flex flex-wrap gap-2">
-            {selectedCategory !== 'all' && (
-              <span className="px-2 py-1 bg-[var(--gaming-primary)] text-white text-xs rounded-full">
-                {categories.find(c => c.id === selectedCategory)?.name || selectedCategory}
-              </span>
-            )}
-            {minRating > 0 && (
-              <span className="px-2 py-1 bg-[var(--gaming-accent)] text-white text-xs rounded-full">
-                {minRating}+ نجوم
-              </span>
-            )}
+        {/* Rating Filter */}
+        <div>
+          <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+            <span>⭐</span>
+            الحد الأدنى للتقييم
+          </h4>
+          <div className="space-y-2">
+            {[4, 3, 2, 1, 0].map((rating) => (
+              <button
+                key={rating}
+                onClick={() => setMinRating(rating)}
+                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 ${
+                  minRating === rating
+                    ? 'bg-yellow-400/10 border border-yellow-400/30 text-yellow-400'
+                    : 'bg-white/5 text-[var(--gaming-light)]/70 hover:bg-white/10 hover:text-white border border-transparent'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  {rating === 0 ? (
+                    <span className="text-sm">جميع التقييمات</span>
+                  ) : (
+                    <>
+                      <div className="flex">
+                        {Array.from({ length: 5 }, (_, i) => (
+                          <span
+                            key={i}
+                            className={`text-base ${i < rating ? 'text-yellow-400' : 'text-gray-600'}`}
+                          >
+                            ★
+                          </span>
+                        ))}
+                      </div>
+                      <span className="text-xs text-[var(--gaming-light)]/50">فما فوق</span>
+                    </>
+                  )}
+                </div>
+                {minRating === rating && (
+                  <span className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
+                )}
+              </button>
+            ))}
           </div>
         </div>
-      )}
+
+        {/* Action Buttons */}
+        <div className="flex gap-3 pt-4 border-t border-white/5">
+          <button
+            onClick={applyFilters}
+            className="flex-1 py-3 rounded-xl bg-gradient-to-r from-[var(--gaming-primary)] to-[var(--gaming-secondary)] text-white font-semibold hover:shadow-lg hover:shadow-[var(--gaming-primary)]/30 transition-all duration-300"
+          >
+            تطبيق
+          </button>
+          <button
+            onClick={clearFilters}
+            className="flex-1 py-3 rounded-xl bg-white/5 text-[var(--gaming-light)] font-semibold hover:bg-white/10 transition-all duration-300 border border-white/10"
+          >
+            مسح
+          </button>
+        </div>
+
+        {/* Active Filters Display */}
+        {(selectedCategory !== 'all' || minRating > 0) && (
+          <div className="pt-4 border-t border-white/5">
+            <h4 className="text-xs font-semibold text-[var(--gaming-light)]/50 mb-3 uppercase tracking-wider">الفلاتر النشطة</h4>
+            <div className="flex flex-wrap gap-2">
+              {selectedCategory !== 'all' && (
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-[var(--gaming-primary)]/20 text-[var(--gaming-primary)] text-sm rounded-full border border-[var(--gaming-primary)]/30">
+                  <span>📂</span>
+                  {categories.find(c => c.id === selectedCategory)?.name || selectedCategory}
+                  <button
+                    onClick={() => setSelectedCategory('all')}
+                    className="hover:text-white transition-colors"
+                  >
+                    ✕
+                  </button>
+                </span>
+              )}
+              {minRating > 0 && (
+                <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-yellow-400/10 text-yellow-400 text-sm rounded-full border border-yellow-400/30">
+                  <span>⭐</span>
+                  {minRating}+ نجوم
+                  <button
+                    onClick={() => setMinRating(0)}
+                    className="hover:text-white transition-colors"
+                  >
+                    ✕
+                  </button>
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

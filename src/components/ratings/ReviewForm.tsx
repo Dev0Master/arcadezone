@@ -91,23 +91,21 @@ export default function ReviewForm({
   };
 
   return (
-    <div className={`game-card p-6 ${className}`}>
-      <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
-        اكتب مراجعة
-      </h3>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className={className}>
+      <form onSubmit={handleSubmit} className="space-y-6">
         {/* Error Message */}
         {error && (
-          <div className="p-3 bg-[var(--gaming-danger)]/20 border border-[var(--gaming-danger)] text-[var(--gaming-danger)] rounded-lg">
-            {error}
+          <div className="p-4 rounded-xl bg-[var(--gaming-danger)]/10 border border-[var(--gaming-danger)]/30 text-[var(--gaming-danger)] flex items-center gap-3">
+            <span className="text-xl">⚠️</span>
+            <span>{error}</span>
           </div>
         )}
 
         {/* Name Field */}
         <div>
-          <label htmlFor="userName" className="block text-sm font-medium text-[var(--gaming-light)] mb-2">
-            اسمك *
+          <label htmlFor="userName" className="block text-sm font-semibold text-white mb-3 flex items-center gap-2">
+            <span>👤</span>
+            اسمك
           </label>
           <input
             id="userName"
@@ -115,7 +113,7 @@ export default function ReviewForm({
             value={formData.userName}
             onChange={(e) => handleInputChange('userName', e.target.value)}
             placeholder="أدخل اسمك"
-            className="input-field"
+            className="w-full px-5 py-4 rounded-xl bg-[var(--gaming-dark)]/50 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[var(--gaming-primary)] focus:ring-2 focus:ring-[var(--gaming-primary)]/20 transition-all duration-300"
             maxLength={100}
             required
           />
@@ -123,56 +121,90 @@ export default function ReviewForm({
 
         {/* Rating Field */}
         <div>
-          <label className="block text-sm font-medium text-[var(--gaming-light)] mb-2">
-            التقييم *
+          <label className="block text-sm font-semibold text-white mb-3 flex items-center gap-2">
+            <span>⭐</span>
+            تقييمك
           </label>
-          <StarRating
-            rating={formData.rating}
-            onRatingChange={handleRatingChange}
-            size="lg"
-            showValue
-          />
-          <p className="text-xs text-[var(--gaming-light)] mt-1">
-            انقر للتقييم (1-5 نجوم)
-          </p>
+          <div className="p-5 rounded-xl bg-[var(--gaming-dark)]/50 border border-white/10">
+            <StarRating
+              rating={formData.rating}
+              onRatingChange={handleRatingChange}
+              size="lg"
+              showValue
+            />
+            <p className="text-xs text-[var(--gaming-light)]/50 mt-3">
+              انقر على النجوم لاختيار تقييمك
+            </p>
+          </div>
         </div>
 
         {/* Review Text Field */}
         <div>
-          <label htmlFor="reviewText" className="block text-sm font-medium text-[var(--gaming-light)] mb-2">
-            مراجعتك *
+          <label htmlFor="reviewText" className="block text-sm font-semibold text-white mb-3 flex items-center gap-2">
+            <span>📝</span>
+            مراجعتك
           </label>
           <textarea
             id="reviewText"
             value={formData.reviewText}
             onChange={(e) => handleInputChange('reviewText', e.target.value)}
-            placeholder="شارك أفكارك حول هذه اللعبة..."
-            className="input-field h-32 resize-none"
+            placeholder="شارك تجربتك مع هذه اللعبة... ما الذي أعجبك؟ ما الذي يمكن تحسينه؟"
+            className="w-full px-5 py-4 rounded-xl bg-[var(--gaming-dark)]/50 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[var(--gaming-primary)] focus:ring-2 focus:ring-[var(--gaming-primary)]/20 transition-all duration-300 h-36 resize-none"
             maxLength={1000}
             required
           />
-          <p className="text-xs text-[var(--gaming-light)] mt-1">
-            {formData.reviewText.length}/1000 حرف
-          </p>
+          <div className="flex items-center justify-between mt-2">
+            <p className="text-xs text-[var(--gaming-light)]/50">
+              الحد الأدنى 10 أحرف
+            </p>
+            <p className={`text-xs ${formData.reviewText.length > 900 ? 'text-[var(--gaming-warning)]' : 'text-[var(--gaming-light)]/50'}`}>
+              {formData.reviewText.length}/1000
+            </p>
+          </div>
         </div>
 
         {/* Submit Button */}
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-4 rounded-xl bg-gradient-to-r from-[var(--gaming-primary)] to-[var(--gaming-secondary)] text-white font-bold text-lg hover:shadow-lg hover:shadow-[var(--gaming-primary)]/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none flex items-center justify-center gap-3"
         >
-          {isSubmitting ? 'جارٍ الإرسال...' : submitButtonText}
+          {isSubmitting ? (
+            <>
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <span>جارٍ الإرسال...</span>
+            </>
+          ) : (
+            <>
+              <span>🚀</span>
+              <span>{submitButtonText}</span>
+            </>
+          )}
         </button>
 
         {/* Review Guidelines */}
-        <div className="text-xs text-[var(--gaming-light)] border-t border-[var(--gaming-light)]/20 pt-4">
-          <p className="mb-1">إرشادات المراجعة:</p>
-          <ul className="list-disc list-inside space-y-1 text-right">
-            <li>كن محترماً وبناءاً</li>
-            <li>ركز على اللعب، الرسومات، والتجربة العامة</li>
-            <li>تجنب الحرقلة عند الإمكان</li>
-            <li>المراجعات تتطلب موافقة المشرف قبل الظهور</li>
+        <div className="p-5 rounded-xl bg-[var(--gaming-primary)]/5 border border-[var(--gaming-primary)]/10">
+          <p className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+            <span>💡</span>
+            إرشادات المراجعة
+          </p>
+          <ul className="space-y-2 text-sm text-[var(--gaming-light)]/60">
+            <li className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--gaming-primary)]" />
+              كن محترماً وبناءاً في مراجعتك
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--gaming-secondary)]" />
+              ركز على تجربة اللعب والرسومات والقصة
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--gaming-accent)]" />
+              تجنب حرق الأحداث المهمة
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-yellow-400" />
+              المراجعات تحتاج موافقة المشرف للظهور
+            </li>
           </ul>
         </div>
       </form>

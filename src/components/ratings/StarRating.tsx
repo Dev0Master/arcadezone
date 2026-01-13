@@ -25,7 +25,7 @@ export default function StarRating({
   const sizeClasses = {
     sm: 'text-lg',
     md: 'text-2xl',
-    lg: 'text-3xl',
+    lg: 'text-4xl',
   };
 
   const handleStarClick = (starRating: number) => {
@@ -50,8 +50,8 @@ export default function StarRating({
   const displayRating = hoverRating || currentRating;
 
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
-      <div className="flex items-center">
+    <div className={`flex items-center gap-3 ${className}`}>
+      <div className="flex items-center gap-0.5">
         {Array.from({ length: 5 }, (_, i) => {
           const starValue = i + 1;
           const isFilled = starValue <= displayRating;
@@ -65,26 +65,26 @@ export default function StarRating({
               onMouseEnter={() => handleMouseEnter(starValue)}
               onMouseLeave={handleMouseLeave}
               disabled={readonly}
-              className={`${sizeClasses[size]} transition-colors duration-200 ${
+              className={`${sizeClasses[size]} transition-all duration-200 ${
                 readonly
                   ? 'cursor-default'
-                  : 'cursor-pointer hover:scale-110 transform transition-transform'
+                  : 'cursor-pointer hover:scale-125 transform'
               }`}
               title={readonly ? `${currentRating} نجوم` : `قيم ${starValue} نجوم`}
             >
               <span
-                className={`relative inline-block ${
+                className={`relative inline-block transition-all duration-300 ${
                   isFilled
-                    ? 'text-yellow-400'
+                    ? 'text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.5)]'
                     : isHalfFilled
-                    ? 'text-yellow-400'
-                    : 'text-gray-600'
-                }`}
+                    ? 'text-yellow-400/50'
+                    : 'text-gray-600 hover:text-gray-500'
+                } ${!readonly && hoverRating >= starValue ? 'scale-110' : ''}`}
               >
                 ★
                 {isHalfFilled && (
                   <span
-                    className="absolute inset-0 overflow-hidden text-yellow-400"
+                    className="absolute inset-0 overflow-hidden text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.5)]"
                     style={{ width: '50%' }}
                   >
                     ★
@@ -97,10 +97,10 @@ export default function StarRating({
       </div>
 
       {showValue && (
-        <span className={`text-[var(--gaming-light)] ${
-          size === 'sm' ? 'text-sm' : size === 'md' ? 'text-base' : 'text-lg'
-        }`}>
-          {currentRating.toFixed(1)}
+        <span className={`font-bold ${
+          size === 'lg' ? 'text-2xl' : size === 'md' ? 'text-lg' : 'text-base'
+        } text-yellow-400`}>
+          {(hoverRating || currentRating).toFixed(1)}
         </span>
       )}
     </div>
