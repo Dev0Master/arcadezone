@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { Game } from '@/lib/types';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -9,16 +10,30 @@ import HeroSection from '@/components/layout/HeroSection';
 import FilterSidebar from '@/components/search/FilterSidebar';
 import GameCard from '@/components/game/GameCard';
 
+// Dynamic import Lottie to avoid SSR issues
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
+
 export default function HomePage() {
   const [games, setGames] = useState<Game[]>([]);
   const [filteredGames, setFilteredGames] = useState<Game[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [dataLoaded, setDataLoaded] = useState(false);
+  const [animationComplete, setAnimationComplete] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
+  const [animationData, setAnimationData] = useState<object | null>(null);
   const searchParams = useSearchParams();
 
+  // Show loading until both data is loaded AND animation completes
+  const loading = !dataLoaded || !animationComplete;
+
   useEffect(() => {
+    // Load Lottie animation
+    fetch('/GameController.json')
+      .then(res => res.json())
+      .then(data => setAnimationData(data))
+      .catch(err => console.error('Failed to load animation:', err));
+    
     fetchGames();
     fetchCategories();
   }, []);
@@ -30,7 +45,6 @@ export default function HomePage() {
 
   const fetchGames = async () => {
     try {
-      setLoading(true);
       const response = await fetch('/api/games');
       if (response.ok) {
         const data = await response.json();
@@ -39,7 +53,7 @@ export default function HomePage() {
     } catch (error) {
       console.error('Error fetching games:', error);
     } finally {
-      setLoading(false);
+      setDataLoaded(true);
     }
   };
 
@@ -114,10 +128,19 @@ export default function HomePage() {
         <Header />
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-center">
-            <div className="relative w-24 h-24 mx-auto mb-6">
-              <div className="absolute inset-0 rounded-full border-4 border-[var(--gaming-primary)]/20" />
-              <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-[var(--gaming-primary)] animate-spin" />
-              <span className="absolute inset-0 flex items-center justify-center text-4xl">🎮</span>
+            <div className="w-48 h-48 sm:w-64 sm:h-64 mx-auto mb-4">
+              {animationData ? (
+                <Lottie
+                  animationData={animationData}
+                  loop={false}
+                  onComplete={() => setAnimationComplete(true)}
+                  className="w-full h-full"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <div className="w-16 h-16 border-4 border-[var(--gaming-primary)] border-t-transparent rounded-full animate-spin" />
+                </div>
+              )}
             </div>
             <p className="text-xl text-[var(--gaming-light)]/80 animate-pulse">جارٍ تحميل الألعاب...</p>
           </div>

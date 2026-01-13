@@ -83,10 +83,10 @@ export default function HeroSection({ onSearch, gamesCount = 0 }: HeroSectionPro
         {/* Main Title */}
         <h1 className="text-5xl md:text-7xl font-black mb-6 animate-fadeInUp animation-delay-100">
           <span className="bg-gradient-to-r from-[var(--gaming-primary)] via-[var(--gaming-secondary)] to-[var(--gaming-accent)] bg-clip-text text-transparent">
-            اكتشف عالم
+            أركيد زون
           </span>
           <br />
-          <span className="text-white">الألعاب الرائعة</span>
+          <span className="text-white">للألعاب الرائعة</span>
         </h1>
 
         {/* Subtitle */}
