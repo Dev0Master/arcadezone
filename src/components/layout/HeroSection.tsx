@@ -26,7 +26,7 @@ export default function HeroSection({ onSearch, gamesCount = 0 }: HeroSectionPro
   const floatingEmojis = ['🎮', '🕹️', '👾', '🎯', '⚔️', '🏆', '💎', '🔥'];
 
   return (
-    <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden pt-20">
+    <section className="relative min-h-[70vh] sm:min-h-[85vh] flex items-center justify-center overflow-hidden pt-20">
       {/* Animated Background */}
       <div className="absolute inset-0">
         {/* Gradient Orbs */}
@@ -75,13 +75,13 @@ export default function HeroSection({ onSearch, gamesCount = 0 }: HeroSectionPro
       {/* Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-4 text-center">
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-8 animate-fadeInUp">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-8 animate-fadeInUp">
           <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-          <span className="text-sm text-[var(--gaming-light)]/80">+{gamesCount} لعبة متاحة الآن</span>
+          <span className="text-xs sm:text-sm text-[var(--gaming-light)]/80">+{gamesCount} لعبة متاحة الآن</span>
         </div>
 
         {/* Main Title */}
-        <h1 className="text-5xl md:text-7xl font-black mb-6 animate-fadeInUp animation-delay-100">
+        <h1 className="text-3xl sm:text-5xl md:text-7xl font-black mb-6 animate-fadeInUp animation-delay-100">
           <span className="bg-gradient-to-r from-[var(--gaming-primary)] via-[var(--gaming-secondary)] to-[var(--gaming-accent)] bg-clip-text text-transparent">
             أركيد زون
           </span>
@@ -90,7 +90,7 @@ export default function HeroSection({ onSearch, gamesCount = 0 }: HeroSectionPro
         </h1>
 
         {/* Subtitle */}
-        <p className="text-xl md:text-2xl text-[var(--gaming-light)]/70 mb-10 max-w-2xl mx-auto leading-relaxed animate-fadeInUp animation-delay-200">
+        <p className="text-base sm:text-xl md:text-2xl text-[var(--gaming-light)]/70 mb-10 max-w-2xl mx-auto leading-relaxed animate-fadeInUp animation-delay-200">
           استكشف مجموعة ضخمة من الألعاب، شارك تقييمك، واكتشف ما يحبه اللاعبون حول العالم
         </p>
 
@@ -110,12 +110,12 @@ export default function HeroSection({ onSearch, gamesCount = 0 }: HeroSectionPro
           ].map((stat, i) => (
             <div
               key={i}
-              className="flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 hover:border-[var(--gaming-primary)]/30 transition-all duration-300 group"
+              className="flex items-center gap-3 px-4 py-2 sm:px-6 sm:py-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 hover:border-[var(--gaming-primary)]/30 transition-all duration-300 group"
             >
-              <span className="text-2xl group-hover:scale-125 transition-transform duration-300">{stat.icon}</span>
+              <span className="text-xl sm:text-2xl group-hover:scale-125 transition-transform duration-300">{stat.icon}</span>
               <div className="text-right">
-                <div className="text-2xl font-bold text-white">{stat.value}</div>
-                <div className="text-sm text-[var(--gaming-light)]/60">{stat.label}</div>
+                <div className="text-xl sm:text-2xl font-bold text-white">{stat.value}</div>
+                <div className="text-xs sm:text-sm text-[var(--gaming-light)]/60">{stat.label}</div>
               </div>
             </div>
           ))}

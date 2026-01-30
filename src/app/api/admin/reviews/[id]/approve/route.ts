@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
 
 // POST: Approve a review
 export async function POST(
@@ -30,7 +30,7 @@ export async function POST(
     const { id } = await params;
 
     // Get the review to update game rating
-    const { data: review, error: reviewError } = await supabase
+    const { data: review, error: reviewError } = await supabaseAdmin
       .from('reviews')
       .select('game_id')
       .eq('id', id)
@@ -41,7 +41,7 @@ export async function POST(
     }
 
     // Update the review to approved
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('reviews')
       .update({ approved: true })
       .eq('id', id);
@@ -65,7 +65,7 @@ export async function POST(
 async function updateGameRating(gameId: string) {
   try {
     // Calculate new average rating
-    const { data: reviews, error } = await supabase
+    const { data: reviews, error } = await supabaseAdmin
       .from('reviews')
       .select('rating')
       .eq('game_id', gameId)
@@ -78,7 +78,7 @@ async function updateGameRating(gameId: string) {
 
     if (!reviews || reviews.length === 0) {
       // Remove rating entry if no approved reviews
-      await supabase
+      await supabaseAdmin
         .from('ratings')
         .delete()
         .eq('game_id', gameId);
@@ -88,7 +88,7 @@ async function updateGameRating(gameId: string) {
     const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
 
     // Update or insert rating
-    await supabase
+    await supabaseAdmin
       .from('ratings')
       .upsert({
         game_id: gameId,

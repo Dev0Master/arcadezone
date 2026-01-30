@@ -10,15 +10,16 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: 'Username and password are required' }, { status: 400 });
     }
 
+    // First check if user exists
+    const user = await db.getAdminByUsername(username);
+    
+    if (!user) {
+      return Response.json({ error: 'بيانات الاعتماد غير صالحة' }, { status: 401 });
+    }
+
     const isValid = await login(username, password);
 
     if (isValid) {
-      // Verify that the user exists in the database
-      const user = await db.getAdminByUsername(username);
-      if (!user) {
-        return Response.json({ error: 'User not found' }, { status: 401 });
-      }
-
       // Create a secure auth token (timestamp-based)
       const authToken = `auth_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
@@ -28,16 +29,18 @@ export async function POST(request: NextRequest) {
         message: 'Login successful'
       });
 
+      // Note: Remove 'Secure' flag for localhost development
+      // In production, add 'Secure;' back to the cookie
       response.headers.set('Set-Cookie',
-        `auth_token=${authToken}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=86400`
+        `auth_token=${authToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=86400`
       );
 
       return response;
     } else {
-      return Response.json({ error: 'Invalid credentials' }, { status: 401 });
+      return Response.json({ error: 'بيانات الاعتماد غير صالحة' }, { status: 401 });
     }
   } catch (error) {
     console.error('Login error:', error);
-    return Response.json({ error: 'An error occurred during login' }, { status: 500 });
+    return Response.json({ error: 'حدث خطأ أثناء تسجيل الدخول' }, { status: 500 });
   }
 }

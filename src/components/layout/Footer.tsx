@@ -27,23 +27,23 @@ export default function Footer() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-32 bg-[var(--gaming-primary)]/20 blur-3xl pointer-events-none" />
 
       <div className="relative bg-gradient-to-b from-[var(--gaming-dark)] to-[var(--gaming-card-bg)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
+        <div className="max-w-7xl mx-auto px-3 pt-12 pb-6 sm:px-6 sm:pt-16 sm:pb-8 lg:px-8">
           {/* Main Footer Content */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 sm:gap-10 sm:mb-12">
             {/* Brand Section */}
             <div className="lg:col-span-2">
               <Link href="/" className="inline-flex items-center gap-3 mb-4 group">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--gaming-primary)] to-[var(--gaming-secondary)] flex items-center justify-center shadow-xl shadow-[var(--gaming-primary)]/20 group-hover:shadow-[var(--gaming-primary)]/40 transition-all duration-300">
-                  <span className="text-3xl">🎮</span>
+                <div className="w-10 h-10 rounded-xl sm:w-14 sm:h-14 sm:rounded-2xl bg-gradient-to-br from-[var(--gaming-primary)] to-[var(--gaming-secondary)] flex items-center justify-center shadow-xl shadow-[var(--gaming-primary)]/20 group-hover:shadow-[var(--gaming-primary)]/40 transition-all duration-300">
+                  <span className="text-2xl sm:text-3xl">🎮</span>
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold bg-gradient-to-r from-[var(--gaming-primary)] to-[var(--gaming-accent)] bg-clip-text text-transparent">
+                  <h3 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-[var(--gaming-primary)] to-[var(--gaming-accent)] bg-clip-text text-transparent">
                     أركيد زون
                   </h3>
-                  <p className="text-sm text-[var(--gaming-light)]/60">متجر الألعاب الأول</p>
+                  <p className="text-xs sm:text-sm text-[var(--gaming-light)]/60">متجر الألعاب الأول</p>
                 </div>
               </Link>
-              <p className="text-[var(--gaming-light)]/70 leading-relaxed max-w-md mb-6">
+              <p className="text-sm sm:text-base text-[var(--gaming-light)]/70 leading-relaxed max-w-md mb-6">
                 اكتشف عالماً من الألعاب المذهلة في أركيد زون. نقدم لك أفضل الألعاب بتقييمات حقيقية من اللاعبين.
               </p>
               
@@ -52,9 +52,9 @@ export default function Footer() {
                 {['🐦', '📘', '📸', '🎬'].map((emoji, i) => (
                   <button
                     key={i}
-                    className="w-10 h-10 rounded-xl bg-white/5 hover:bg-gradient-to-br hover:from-[var(--gaming-primary)] hover:to-[var(--gaming-secondary)] flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-[var(--gaming-primary)]/30"
+                    className="w-8 h-8 rounded-lg sm:w-10 sm:h-10 sm:rounded-xl bg-white/5 hover:bg-gradient-to-br hover:from-[var(--gaming-primary)] hover:to-[var(--gaming-secondary)] flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-[var(--gaming-primary)]/30"
                   >
-                    <span className="text-lg">{emoji}</span>
+                    <span className="text-base sm:text-lg">{emoji}</span>
                   </button>
                 ))}
               </div>
@@ -62,18 +62,18 @@ export default function Footer() {
 
             {/* Quick Links */}
             <div>
-              <h4 className="text-lg font-bold text-white mb-5 flex items-center gap-2">
+              <h4 className="text-base sm:text-lg font-bold text-white mb-5 flex items-center gap-2">
                 <span className="w-8 h-8 rounded-lg bg-[var(--gaming-primary)]/20 flex items-center justify-center">
                   🔗
                 </span>
                 روابط سريعة
               </h4>
-              <ul className="space-y-3">
+              <ul className="space-y-2 sm:space-y-3">
                 {quickLinks.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-[var(--gaming-light)]/70 hover:text-[var(--gaming-primary)] transition-colors duration-300 flex items-center gap-2 group"
+                      className="text-sm sm:text-base text-[var(--gaming-light)]/70 hover:text-[var(--gaming-primary)] transition-colors duration-300 flex items-center gap-2 group"
                     >
                       <span className="w-1.5 h-1.5 rounded-full bg-[var(--gaming-primary)]/50 group-hover:bg-[var(--gaming-primary)] group-hover:scale-150 transition-all duration-300" />
                       {link.label}
@@ -85,13 +85,13 @@ export default function Footer() {
 
             {/* Categories */}
             <div>
-              <h4 className="text-lg font-bold text-white mb-5 flex items-center gap-2">
+              <h4 className="text-base sm:text-lg font-bold text-white mb-5 flex items-center gap-2">
                 <span className="w-8 h-8 rounded-lg bg-[var(--gaming-secondary)]/20 flex items-center justify-center">
                   🎯
                 </span>
                 فئات الألعاب
               </h4>
-              <ul className="space-y-3">
+              <ul className="space-y-2 sm:space-y-3">
                 {categories.map((cat, i) => (
                   <li key={i}>
                     <span className="text-[var(--gaming-light)]/70 flex items-center gap-2">
@@ -105,22 +105,22 @@ export default function Footer() {
           </div>
 
           {/* Newsletter Section */}
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[var(--gaming-primary)]/20 to-[var(--gaming-secondary)]/20 p-8 mb-12">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[var(--gaming-primary)]/20 to-[var(--gaming-secondary)]/20 p-4 mb-8 sm:p-8 sm:mb-12">
             <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--gaming-primary)]/10 rounded-full blur-3xl" />
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-[var(--gaming-secondary)]/10 rounded-full blur-3xl" />
             
             <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
               <div>
-                <h4 className="text-xl font-bold text-white mb-2">📬 اشترك في نشرتنا البريدية</h4>
+                <h4 className="text-lg sm:text-xl font-bold text-white mb-2">📬 اشترك في نشرتنا البريدية</h4>
                 <p className="text-[var(--gaming-light)]/70">احصل على آخر أخبار الألعاب والعروض الحصرية</p>
               </div>
               <div className="flex w-full md:w-auto gap-3">
                 <input
                   type="email"
                   placeholder="بريدك الإلكتروني"
-                  className="flex-1 md:w-64 px-5 py-3 rounded-xl bg-[var(--gaming-dark)]/50 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[var(--gaming-primary)] transition-colors"
+                  className="flex-1 md:w-64 px-3 py-2 rounded-lg sm:px-5 sm:py-3 sm:rounded-xl bg-[var(--gaming-dark)]/50 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[var(--gaming-primary)] transition-colors text-sm"
                 />
-                <button className="px-6 py-3 rounded-xl bg-gradient-to-r from-[var(--gaming-primary)] to-[var(--gaming-secondary)] text-white font-semibold hover:shadow-lg hover:shadow-[var(--gaming-primary)]/30 transition-all duration-300 hover:scale-105">
+                <button className="px-4 py-2 rounded-lg text-sm sm:px-6 sm:py-3 sm:rounded-xl bg-gradient-to-r from-[var(--gaming-primary)] to-[var(--gaming-secondary)] text-white font-semibold hover:shadow-lg hover:shadow-[var(--gaming-primary)]/30 transition-all duration-300 hover:scale-105">
                   اشترك
                 </button>
               </div>

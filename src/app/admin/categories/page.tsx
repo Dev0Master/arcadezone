@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { Category } from '@/lib/types';
 
 export default function AdminCategoriesPage() {
@@ -13,7 +12,6 @@ export default function AdminCategoriesPage() {
     name: '',
     description: '',
   });
-  const router = useRouter();
 
   useEffect(() => {
     fetchCategories();
@@ -59,11 +57,9 @@ export default function AdminCategoriesPage() {
       });
 
       if (response.ok) {
-        // Reset form
         setFormData({ name: '', description: '' });
         setShowAddForm(false);
         setEditingCategory(null);
-        // Refresh categories
         await fetchCategories();
         alert(editingCategory ? 'تم تحديث الفئة بنجاح!' : 'تم إضافة الفئة بنجاح!');
       } else {
@@ -114,179 +110,128 @@ export default function AdminCategoriesPage() {
     setEditingCategory(null);
   };
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center p-4">
-        <div className="text-2xl font-semibold text-[var(--gaming-primary)]">جارٍ تحميل الفئات...</div>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex min-h-screen">
-      {/* Sidebar */}
-      <div className="w-64 gaming-sidebar">
-        <div className="p-4 border-b border-[var(--gaming-light)]/30">
-          <h1 className="text-xl font-bold text-[var(--gaming-primary)]">لوحة المشرف</h1>
+    <>
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h2 className="text-2xl font-bold text-[var(--foreground)] mb-2">إدارة الفئات</h2>
+          <p className="text-[var(--gaming-light)]">
+            إدارة فئات الألعاب لتنظيم مجموعة الألعاب الخاصة بك
+          </p>
         </div>
-        <nav className="p-4">
-          <ul className="space-y-2">
-            <li>
-              <a href="/admin/dashboard" className="block p-2 text-[var(--gaming-light)] hover:bg-[var(--gaming-card-hover)] rounded">
-                لوحة التحكم
-              </a>
-            </li>
-            <li>
-              <a href="/admin/games/new" className="block p-2 text-[var(--gaming-light)] hover:bg-[var(--gaming-card-hover)] rounded">
-                إضافة لعبة جديدة
-              </a>
-            </li>
-            <li>
-              <a href="/admin/reviews" className="block p-2 text-[var(--gaming-light)] hover:bg-[var(--gaming-card-hover)] rounded">
-                إدارة المراجعات
-              </a>
-            </li>
-            <li>
-              <a href="/admin/categories" className="block p-2 text-[var(--gaming-primary)] font-bold">
-                الفئات
-              </a>
-            </li>
-            <li>
-              <button
-                onClick={async () => {
-                  await fetch('/api/admin/logout', {
-                    method: 'POST',
-                  });
-                  router.push('/login');
-                  router.refresh();
-                }}
-                className="w-full text-right p-2 text-[var(--gaming-light)] hover:bg-[var(--gaming-card-hover)] rounded"
-              >
-                تسجيل الخروج
-              </button>
-            </li>
-          </ul>
-        </nav>
+        <button
+          onClick={() => setShowAddForm(true)}
+          className="btn btn-primary"
+        >
+          إضافة فئة جديدة
+        </button>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 p-6 bg-[var(--background)]">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h2 className="text-2xl font-bold text-[var(--foreground)] mb-2">إدارة الفئات</h2>
-            <p className="text-[var(--gaming-light)]">
-              إدارة فئات الألعاب لتنظيم مجموعة الألعاب الخاصة بك
-            </p>
-          </div>
+      {/* Add/Edit Form */}
+      {showAddForm && (
+        <div className="game-card p-6 mb-6">
+          <h3 className="text-lg font-bold text-[var(--foreground)] mb-4">
+            {editingCategory ? 'تعديل الفئة' : 'إضافة فئة جديدة'}
+          </h3>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-[var(--gaming-light)] mb-1">
+                اسم الفئة *
+              </label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="input-field"
+                placeholder="مثال: أكشن، مغامرة، تقمص الأدوار"
+                required
+                maxLength={50}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-[var(--gaming-light)] mb-1">
+                الوصف
+              </label>
+              <textarea
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                className="input-field h-24 resize-none"
+                placeholder="وصف موجز لهذه الفئة..."
+                maxLength={200}
+              />
+            </div>
+            <div className="flex gap-2">
+              <button type="submit" className="btn btn-primary">
+                {editingCategory ? 'تحديث الفئة' : 'إضافة الفئة'}
+              </button>
+              <button type="button" onClick={cancelForm} className="btn btn-outline">
+                إلغاء
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Categories List */}
+      {loading ? (
+        <div className="game-card p-12 text-center">
+          <div className="w-8 h-8 border-4 border-[var(--gaming-primary)] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[var(--gaming-light)]">جارٍ تحميل الفئات...</p>
+        </div>
+      ) : categories.length === 0 ? (
+        <div className="game-card p-12 text-center">
+          <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">لا توجد فئات بعد</h3>
+          <p className="text-[var(--gaming-light)] mb-6">
+            ابدأ في تنظيم ألعابك عن طريق إنشاء فئات.
+          </p>
           <button
             onClick={() => setShowAddForm(true)}
             className="btn btn-primary"
           >
-            إضافة فئة جديدة
+            أنشئ أول فئة لك
           </button>
         </div>
-
-        {/* Add/Edit Form */}
-        {showAddForm && (
-          <div className="game-card p-6 mb-6">
-            <h3 className="text-lg font-bold text-[var(--foreground)] mb-4">
-              {editingCategory ? 'تعديل الفئة' : 'إضافة فئة جديدة'}
-            </h3>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-[var(--gaming-light)] mb-1">
-                  اسم الفئة *
-                </label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="input-field"
-                  placeholder="مثال: أكشن، مغامرة، تقمص الأدوار"
-                  required
-                  maxLength={50}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[var(--gaming-light)] mb-1">
-                  الوصف
-                </label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="input-field h-24 resize-none"
-                  placeholder="وصف موجز لهذه الفئة..."
-                  maxLength={200}
-                />
-              </div>
-              <div className="flex gap-2">
-                <button type="submit" className="btn btn-primary">
-                  {editingCategory ? 'تحديث الفئة' : 'إضافة الفئة'}
-                </button>
-                <button type="button" onClick={cancelForm} className="btn btn-outline">
-                  إلغاء
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
-
-        {/* Categories List */}
-        {categories.length === 0 ? (
-          <div className="game-card p-12 text-center">
-            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">لا توجد فئات بعد</h3>
-            <p className="text-[var(--gaming-light)] mb-6">
-              ابدأ في تنظيم ألعابك عن طريق إنشاء فئات.
-            </p>
-            <button
-              onClick={() => setShowAddForm(true)}
-              className="btn btn-primary"
-            >
-              أنشئ أول فئة لك
-            </button>
-          </div>
-        ) : (
-          <div className="game-card">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-              {categories.map((category) => (
-                <div
-                  key={category.id}
-                  className="bg-[var(--gaming-dark)] rounded-lg p-4 border border-[var(--gaming-light)]/20"
-                >
-                  <h4 className="text-lg font-bold text-[var(--foreground)] mb-2">
-                    {category.name}
-                  </h4>
-                  {category.description && (
-                    <p className="text-[var(--gaming-light)] text-sm mb-4 line-clamp-3">
-                      {category.description}
-                    </p>
-                  )}
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-[var(--gaming-light)]">
-                      إنشاء: {new Date(category.createdAt).toLocaleDateString()}
-                    </span>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => handleEdit(category)}
-                        className="text-[var(--gaming-primary)] hover:text-[var(--gaming-accent)] text-sm"
-                      >
-                        تعديل
-                      </button>
-                      <button
-                        onClick={() => handleDelete(category.id)}
-                        className="text-[var(--gaming-danger)] hover:text-red-400 text-sm"
-                      >
-                        حذف
-                      </button>
-                    </div>
+      ) : (
+        <div className="game-card">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+            {categories.map((category) => (
+              <div
+                key={category.id}
+                className="bg-[var(--gaming-dark)] rounded-lg p-4 border border-[var(--gaming-light)]/20"
+              >
+                <h4 className="text-lg font-bold text-[var(--foreground)] mb-2">
+                  {category.name}
+                </h4>
+                {category.description && (
+                  <p className="text-[var(--gaming-light)] text-sm mb-4 line-clamp-3">
+                    {category.description}
+                  </p>
+                )}
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-[var(--gaming-light)]">
+                    إنشاء: {new Date(category.createdAt).toLocaleDateString()}
+                  </span>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleEdit(category)}
+                      className="text-[var(--gaming-primary)] hover:text-[var(--gaming-accent)] text-sm"
+                    >
+                      تعديل
+                    </button>
+                    <button
+                      onClick={() => handleDelete(category.id)}
+                      className="text-[var(--gaming-danger)] hover:text-red-400 text-sm"
+                    >
+                      حذف
+                    </button>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </>
   );
 }

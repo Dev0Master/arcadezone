@@ -32,25 +32,25 @@ export default function Header() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled
-          ? 'bg-[var(--gaming-dark)]/95 backdrop-blur-xl shadow-2xl shadow-[var(--gaming-primary)]/10 py-3'
-          : 'bg-transparent py-5'
+          ? 'bg-[var(--gaming-dark)]/95 backdrop-blur-xl shadow-2xl shadow-[var(--gaming-primary)]/10 py-2'
+          : 'bg-transparent py-3'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="group flex items-center gap-3">
             <div className="relative">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--gaming-primary)] to-[var(--gaming-secondary)] flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg shadow-[var(--gaming-primary)]/30">
-                <span className="text-2xl">🎮</span>
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-[var(--gaming-primary)] to-[var(--gaming-secondary)] flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg shadow-[var(--gaming-primary)]/30">
+                <span className="text-xl sm:text-2xl">🎮</span>
               </div>
               <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-[var(--gaming-accent)] rounded-full animate-pulse" />
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-xl font-bold bg-gradient-to-r from-[var(--gaming-primary)] via-[var(--gaming-secondary)] to-[var(--gaming-accent)] bg-clip-text text-transparent">
+              <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-[var(--gaming-primary)] via-[var(--gaming-secondary)] to-[var(--gaming-accent)] bg-clip-text text-transparent">
                 أركيد زون
               </h1>
-              <p className="text-xs text-[var(--gaming-light)]/60">متجر الألعاب</p>
+              <p className="text-[10px] sm:text-xs text-[var(--gaming-light)]/60">متجر الألعاب</p>
             </div>
           </Link>
 
@@ -77,29 +77,17 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* Action Buttons */}
-          <div className="flex items-center gap-3">
-            {/* Admin Link */}
-            <Link
-              href="/login"
-              className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl border border-[var(--gaming-primary)]/30 text-[var(--gaming-light)] hover:bg-[var(--gaming-primary)]/10 hover:border-[var(--gaming-primary)] transition-all duration-300"
-            >
-              <span>⚙️</span>
-              <span className="text-sm">لوحة التحكم</span>
-            </Link>
-
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
-            >
-              <div className="w-6 h-5 flex flex-col justify-between">
-                <span className={`h-0.5 bg-[var(--gaming-light)] rounded transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
-                <span className={`h-0.5 bg-[var(--gaming-light)] rounded transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''}`} />
-                <span className={`h-0.5 bg-[var(--gaming-light)] rounded transition-all duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
-              </div>
-            </button>
-          </div>
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
+          >
+            <div className="w-6 h-5 flex flex-col justify-between">
+              <span className={`h-0.5 bg-[var(--gaming-light)] rounded transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+              <span className={`h-0.5 bg-[var(--gaming-light)] rounded transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''}`} />
+              <span className={`h-0.5 bg-[var(--gaming-light)] rounded transition-all duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+            </div>
+          </button>
         </div>
 
         {/* Mobile Menu */}
@@ -124,14 +112,6 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/login"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-[var(--gaming-light)] hover:bg-white/5 transition-all duration-300"
-            >
-              <span className="text-xl">⚙️</span>
-              لوحة التحكم
-            </Link>
           </nav>
         </div>
       </div>

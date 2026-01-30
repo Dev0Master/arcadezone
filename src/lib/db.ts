@@ -1,13 +1,19 @@
 import { Game, AdminUser, Category, Review, Rating, Platform } from './types';
 import { hashPassword } from './auth';
-import { supabase } from './supabase';
+import { supabase, supabaseAdmin } from './supabase';
 
 export const db = {
   // Game operations
   async getAllGames(): Promise<Game[]> {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('games')
-      .select('*')
+      .select(`
+        *,
+        ratings (
+          average_rating,
+          total_ratings
+        )
+      `)
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -15,14 +21,21 @@ export const db = {
       return [];
     }
 
-    return data.map((row: any) => ({
-      id: row.id,
-      title: row.title,
-      description: row.description,
-      imageUrl: row.image_url || undefined,
-      createdAt: new Date(row.created_at),
-      updatedAt: new Date(row.updated_at),
-    }));
+    return data.map((row: any) => {
+      // Handle ratings - could be an object, array, or null
+      const ratings = Array.isArray(row.ratings) ? row.ratings[0] : row.ratings;
+
+      return {
+        id: row.id,
+        title: row.title,
+        description: row.description,
+        imageUrl: row.image_url || undefined,
+        averageRating: ratings?.average_rating || undefined,
+        totalRatings: ratings?.total_ratings || undefined,
+        createdAt: new Date(row.created_at),
+        updatedAt: new Date(row.updated_at),
+      };
+    });
   },
 
   async getGameById(id: string): Promise<Game | undefined> {
@@ -174,7 +187,7 @@ export const db = {
 
   // Admin user operations
   async getAdminByUsername(username: string): Promise<AdminUser | undefined> {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('admin_users')
       .select('id, username, password, created_at')
       .eq('username', username)
@@ -200,7 +213,7 @@ export const db = {
   async addAdmin(admin: Omit<AdminUser, 'id' | 'createdAt'>): Promise<AdminUser> {
     const hashedPassword = await hashPassword(admin.password);
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('admin_users')
       .insert([
         {
@@ -525,7 +538,7 @@ export const db = {
 
   // Review operations
   async getReviewsByGame(gameId: string): Promise<Review[]> {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('reviews')
       .select('*')
       .eq('game_id', gameId)
@@ -549,9 +562,15 @@ export const db = {
   },
 
   async addReview(review: Omit<Review, 'id' | 'createdAt'>): Promise<Review> {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('reviews')
-      .insert([review])
+      .insert([{
+        game_id: review.gameId,
+        user_name: review.userName,
+        rating: review.rating,
+        review_text: review.reviewText,
+        approved: review.approved,
+      }])
       .select()
       .single();
 
@@ -576,7 +595,7 @@ export const db = {
 
   async updateGameRating(gameId: string): Promise<void> {
     // Calculate new average rating
-    const { data: reviews } = await supabase
+    const { data: reviews } = await supabaseAdmin
       .from('reviews')
       .select('rating')
       .eq('game_id', gameId)
@@ -587,7 +606,7 @@ export const db = {
     const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
 
     // Update or insert rating
-    await supabase
+    await supabaseAdmin
       .from('ratings')
       .upsert({
         game_id: gameId,

@@ -9,6 +9,7 @@ import Footer from '@/components/layout/Footer';
 import HeroSection from '@/components/layout/HeroSection';
 import FilterSidebar from '@/components/search/FilterSidebar';
 import GameCard from '@/components/game/GameCard';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 // Dynamic import Lottie to avoid SSR issues
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
@@ -21,21 +22,21 @@ export default function HomePage() {
   const [searchLoading, setSearchLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
-  const [animationData, setAnimationData] = useState<object | null>(null);
   const searchParams = useSearchParams();
 
   // Show loading until both data is loaded AND animation completes
   const loading = !dataLoaded || !animationComplete;
 
   useEffect(() => {
-    // Load Lottie animation
-    fetch('/GameController.json')
-      .then(res => res.json())
-      .then(data => setAnimationData(data))
-      .catch(err => console.error('Failed to load animation:', err));
+    // Set animation complete after a delay to show loading animation
+    const timer = setTimeout(() => {
+      setAnimationComplete(true);
+    }, 2000);
     
     fetchGames();
     fetchCategories();
+    
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -127,23 +128,7 @@ export default function HomePage() {
       <div className="min-h-screen bg-[var(--gaming-dark)]">
         <Header />
         <div className="flex items-center justify-center min-h-screen">
-          <div className="text-center">
-            <div className="w-48 h-48 sm:w-64 sm:h-64 mx-auto mb-4">
-              {animationData ? (
-                <Lottie
-                  animationData={animationData}
-                  loop={false}
-                  onComplete={() => setAnimationComplete(true)}
-                  className="w-full h-full"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <div className="w-16 h-16 border-4 border-[var(--gaming-primary)] border-t-transparent rounded-full animate-spin" />
-                </div>
-              )}
-            </div>
-            <p className="text-xl text-[var(--gaming-light)]/80 animate-pulse">جارٍ تحميل الألعاب...</p>
-          </div>
+          <LoadingSpinner text="جارٍ تحميل الألعاب..." size="lg" />
         </div>
       </div>
     );
@@ -159,19 +144,19 @@ export default function HomePage() {
       )}
 
       {/* Main Content */}
-      <main className={`relative ${hasActiveFilters ? 'pt-28' : ''}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className={`relative ${hasActiveFilters ? 'pt-20 sm:pt-28' : ''}`}>
+        <div className="max-w-7xl mx-auto px-3 py-8 sm:px-6 sm:py-12 lg:px-8">
           {/* Section Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 sm:gap-4 sm:mb-10">
             <div>
-              <h2 className="text-3xl font-bold text-white flex items-center gap-3">
-                <span className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--gaming-primary)] to-[var(--gaming-secondary)] flex items-center justify-center text-xl">
+              <h2 className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-3">
+                <span className="w-8 h-8 rounded-lg sm:w-10 sm:h-10 sm:rounded-xl bg-gradient-to-br from-[var(--gaming-primary)] to-[var(--gaming-secondary)] flex items-center justify-center text-lg sm:text-xl">
                   {hasActiveFilters ? '🔍' : '🎮'}
                 </span>
                 {hasActiveFilters ? 'نتائج البحث' : 'جميع الألعاب'}
               </h2>
               {hasActiveFilters && (
-                <p className="text-[var(--gaming-light)]/60 mt-2">
+                <p className="text-sm sm:text-base text-[var(--gaming-light)]/60 mt-2">
                   تم العثور على <span className="text-[var(--gaming-primary)] font-semibold">{filteredGames.length}</span> لعبة
                 </p>
               )}
@@ -180,7 +165,7 @@ export default function HomePage() {
             {/* Filter Toggle Button (Mobile) */}
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="lg:hidden flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-[var(--gaming-light)] hover:bg-white/10 transition-all duration-300"
+              className="lg:hidden flex items-center gap-2 px-3 py-2 rounded-lg text-sm sm:px-4 sm:py-2.5 sm:rounded-xl bg-white/5 border border-white/10 text-[var(--gaming-light)] hover:bg-white/10 transition-all duration-300"
             >
               <span>🎛️</span>
               <span>الفلاتر</span>
@@ -191,7 +176,7 @@ export default function HomePage() {
           </div>
 
           {/* Layout with Sidebar */}
-          <div className="flex flex-col lg:flex-row-reverse gap-8">
+          <div className="flex flex-col lg:flex-row-reverse gap-4 sm:gap-8">
             {/* Filter Sidebar */}
             <aside className={`lg:w-80 flex-shrink-0 ${showFilters ? 'block' : 'hidden lg:block'}`}>
               <div className="sticky top-28">
@@ -202,7 +187,7 @@ export default function HomePage() {
             {/* Games Grid */}
             <div className="flex-grow">
               {searchLoading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
                   {Array.from({ length: 6 }).map((_, i) => (
                     <div key={i} className="rounded-2xl overflow-hidden bg-[var(--gaming-card-bg)] animate-pulse">
                       <div className="h-52 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer" />
@@ -223,11 +208,11 @@ export default function HomePage() {
                   ))}
                 </div>
               ) : filteredGames.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-20 px-6 rounded-3xl bg-gradient-to-b from-[var(--gaming-card-bg)] to-[var(--gaming-dark)] border border-white/5">
-                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[var(--gaming-primary)]/20 to-[var(--gaming-secondary)]/20 flex items-center justify-center mb-6">
-                    <span className="text-5xl">{hasActiveFilters ? '🔍' : '🎮'}</span>
+                <div className="flex flex-col items-center justify-center py-12 px-4 rounded-2xl sm:py-20 sm:px-6 sm:rounded-3xl bg-gradient-to-b from-[var(--gaming-card-bg)] to-[var(--gaming-dark)] border border-white/5">
+                  <div className="w-16 h-16 mb-4 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-[var(--gaming-primary)]/20 to-[var(--gaming-secondary)]/20 flex items-center justify-center sm:mb-6">
+                    <span className="text-3xl sm:text-5xl">{hasActiveFilters ? '🔍' : '🎮'}</span>
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-3">
+                  <h3 className="text-xl mb-2 sm:text-2xl font-bold text-white sm:mb-3">
                     {hasActiveFilters ? 'لم يتم العثور على ألعاب' : 'لا توجد ألعاب متاحة'}
                   </h3>
                   <p className="text-[var(--gaming-light)]/60 text-center max-w-md mb-6">
@@ -238,14 +223,14 @@ export default function HomePage() {
                   {hasActiveFilters && (
                     <button
                       onClick={() => window.history.pushState({}, '', '/')}
-                      className="px-6 py-3 rounded-xl bg-gradient-to-r from-[var(--gaming-primary)] to-[var(--gaming-secondary)] text-white font-semibold hover:shadow-lg hover:shadow-[var(--gaming-primary)]/30 transition-all duration-300"
+                      className="px-4 py-2 rounded-lg text-sm sm:px-6 sm:py-3 sm:rounded-xl bg-gradient-to-r from-[var(--gaming-primary)] to-[var(--gaming-secondary)] text-white font-semibold hover:shadow-lg hover:shadow-[var(--gaming-primary)]/30 transition-all duration-300"
                     >
                       مسح جميع الفلاتر
                     </button>
                   )}
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
                   {filteredGames.map((game, index) => (
                     <div
                       key={game.id}

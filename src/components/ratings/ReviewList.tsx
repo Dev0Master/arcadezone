@@ -3,9 +3,11 @@
 import { useState, useEffect } from 'react';
 import { Review } from '@/lib/types';
 import ReviewCard from './ReviewCard';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 interface ReviewListProps {
   gameId?: string;
+  reviews?: Review[];
   showAllReviews?: boolean;
   adminMode?: boolean;
   onApprove?: (reviewId: string) => void;
@@ -16,6 +18,7 @@ interface ReviewListProps {
 
 export default function ReviewList({
   gameId,
+  reviews: propReviews,
   showAllReviews = false,
   adminMode = false,
   onApprove,
@@ -23,14 +26,22 @@ export default function ReviewList({
   onReply,
   className = '',
 }: ReviewListProps) {
-  const [reviews, setReviews] = useState<Review[]>([]);
+  const [internalReviews, setInternalReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'highest' | 'lowest'>('newest');
 
+  // Use prop reviews if provided, otherwise use internal state
+  const reviews = propReviews ?? internalReviews;
+
   useEffect(() => {
-    fetchReviews();
-  }, [gameId, adminMode, sortBy]);
+    // Only fetch if reviews are not provided via props
+    if (!propReviews) {
+      fetchReviews();
+    } else {
+      setLoading(false);
+    }
+  }, [gameId, adminMode, sortBy, propReviews]);
 
   const fetchReviews = async () => {
     try {
@@ -59,7 +70,7 @@ export default function ReviewList({
       }
 
       const data = await response.json();
-      setReviews(data.reviews || []);
+      setInternalReviews(data.reviews || []);
     } catch (err) {
       setError('Unable to load reviews. Please try again later.');
       console.error('Error fetching reviews:', err);
@@ -78,10 +89,12 @@ export default function ReviewList({
         throw new Error('Failed to approve review');
       }
 
-      // Update local state
-      setReviews(reviews.map(review =>
-        review.id === reviewId ? { ...review, approved: true } : review
-      ));
+      // Update local state only if using internal reviews
+      if (!propReviews) {
+        setInternalReviews(internalReviews.map(review =>
+          review.id === reviewId ? { ...review, approved: true } : review
+        ));
+      }
 
       onApprove?.(reviewId);
     } catch (err) {
@@ -104,8 +117,10 @@ export default function ReviewList({
         throw new Error('Failed to reject review');
       }
 
-      // Remove from local state
-      setReviews(reviews.filter(review => review.id !== reviewId));
+      // Remove from local state only if using internal reviews
+      if (!propReviews) {
+        setInternalReviews(internalReviews.filter(review => review.id !== reviewId));
+      }
       onReject?.(reviewId);
     } catch (err) {
       console.error('Error rejecting review:', err);
@@ -135,14 +150,8 @@ export default function ReviewList({
 
   if (loading) {
     return (
-      <div className={`space-y-4 ${className}`}>
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="game-card p-6 animate-pulse">
-            <div className="h-4 bg-gray-700 rounded w-1/4 mb-2"></div>
-            <div className="h-3 bg-gray-700 rounded w-1/6 mb-3"></div>
-            <div className="h-16 bg-gray-700 rounded mb-2"></div>
-          </div>
-        ))}
+      <div className={`${className}`}>
+        <LoadingSpinner text="جارٍ تحميل التقييمات..." size="sm" />
       </div>
     );
   }

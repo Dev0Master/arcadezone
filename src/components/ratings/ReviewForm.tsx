@@ -92,10 +92,10 @@ export default function ReviewForm({
 
   return (
     <div className={className}>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
         {/* Error Message */}
         {error && (
-          <div className="p-4 rounded-xl bg-[var(--gaming-danger)]/10 border border-[var(--gaming-danger)]/30 text-[var(--gaming-danger)] flex items-center gap-3">
+          <div className="p-3 rounded-lg sm:p-4 sm:rounded-xl bg-[var(--gaming-danger)]/10 border border-[var(--gaming-danger)]/30 text-[var(--gaming-danger)] text-sm flex items-center gap-3">
             <span className="text-xl">⚠️</span>
             <span>{error}</span>
           </div>
@@ -103,7 +103,7 @@ export default function ReviewForm({
 
         {/* Name Field */}
         <div>
-          <label htmlFor="userName" className="block text-sm font-semibold text-white mb-3 flex items-center gap-2">
+          <label htmlFor="userName" className="block text-xs sm:text-sm font-semibold text-white mb-3 flex items-center gap-2">
             <span>👤</span>
             اسمك
           </label>
@@ -113,7 +113,7 @@ export default function ReviewForm({
             value={formData.userName}
             onChange={(e) => handleInputChange('userName', e.target.value)}
             placeholder="أدخل اسمك"
-            className="w-full px-5 py-4 rounded-xl bg-[var(--gaming-dark)]/50 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[var(--gaming-primary)] focus:ring-2 focus:ring-[var(--gaming-primary)]/20 transition-all duration-300"
+            className="w-full px-3 py-3 text-sm rounded-lg sm:px-5 sm:py-4 sm:rounded-xl bg-[var(--gaming-dark)]/50 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[var(--gaming-primary)] focus:ring-2 focus:ring-[var(--gaming-primary)]/20 transition-all duration-300"
             maxLength={100}
             required
           />
@@ -121,11 +121,11 @@ export default function ReviewForm({
 
         {/* Rating Field */}
         <div>
-          <label className="block text-sm font-semibold text-white mb-3 flex items-center gap-2">
+          <label className="block text-xs sm:text-sm font-semibold text-white mb-3 flex items-center gap-2">
             <span>⭐</span>
             تقييمك
           </label>
-          <div className="p-5 rounded-xl bg-[var(--gaming-dark)]/50 border border-white/10">
+          <div className="p-3 rounded-lg sm:p-5 sm:rounded-xl bg-[var(--gaming-dark)]/50 border border-white/10">
             <StarRating
               rating={formData.rating}
               onRatingChange={handleRatingChange}
@@ -140,7 +140,7 @@ export default function ReviewForm({
 
         {/* Review Text Field */}
         <div>
-          <label htmlFor="reviewText" className="block text-sm font-semibold text-white mb-3 flex items-center gap-2">
+          <label htmlFor="reviewText" className="block text-xs sm:text-sm font-semibold text-white mb-3 flex items-center gap-2">
             <span>📝</span>
             مراجعتك
           </label>
@@ -149,7 +149,7 @@ export default function ReviewForm({
             value={formData.reviewText}
             onChange={(e) => handleInputChange('reviewText', e.target.value)}
             placeholder="شارك تجربتك مع هذه اللعبة... ما الذي أعجبك؟ ما الذي يمكن تحسينه؟"
-            className="w-full px-5 py-4 rounded-xl bg-[var(--gaming-dark)]/50 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[var(--gaming-primary)] focus:ring-2 focus:ring-[var(--gaming-primary)]/20 transition-all duration-300 h-36 resize-none"
+            className="w-full px-3 py-3 text-sm rounded-lg h-32 sm:px-5 sm:py-4 sm:rounded-xl sm:h-36 bg-[var(--gaming-dark)]/50 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[var(--gaming-primary)] focus:ring-2 focus:ring-[var(--gaming-primary)]/20 transition-all duration-300 resize-none"
             maxLength={1000}
             required
           />
@@ -167,7 +167,7 @@ export default function ReviewForm({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full py-4 rounded-xl bg-gradient-to-r from-[var(--gaming-primary)] to-[var(--gaming-secondary)] text-white font-bold text-lg hover:shadow-lg hover:shadow-[var(--gaming-primary)]/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none flex items-center justify-center gap-3"
+          className="w-full py-3 rounded-lg text-base sm:py-4 sm:rounded-xl sm:text-lg bg-gradient-to-r from-[var(--gaming-primary)] to-[var(--gaming-secondary)] text-white font-bold hover:shadow-lg hover:shadow-[var(--gaming-primary)]/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none flex items-center justify-center gap-3"
         >
           {isSubmitting ? (
             <>
@@ -183,12 +183,12 @@ export default function ReviewForm({
         </button>
 
         {/* Review Guidelines */}
-        <div className="p-5 rounded-xl bg-[var(--gaming-primary)]/5 border border-[var(--gaming-primary)]/10">
-          <p className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+        <div className="p-3 rounded-lg sm:p-5 sm:rounded-xl bg-[var(--gaming-primary)]/5 border border-[var(--gaming-primary)]/10">
+          <p className="text-xs sm:text-sm font-semibold text-white mb-3 flex items-center gap-2">
             <span>💡</span>
             إرشادات المراجعة
           </p>
-          <ul className="space-y-2 text-sm text-[var(--gaming-light)]/60">
+          <ul className="space-y-2 text-xs sm:text-sm text-[var(--gaming-light)]/60">
             <li className="flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-[var(--gaming-primary)]" />
               كن محترماً وبناءاً في مراجعتك

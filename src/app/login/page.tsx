@@ -7,10 +7,13 @@ export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
 
     try {
       const response = await fetch('/api/admin/login', {
@@ -18,6 +21,7 @@ export default function LoginPage() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // Important for cookies
         body: JSON.stringify({ username, password }),
       });
 
@@ -32,18 +36,20 @@ export default function LoginPage() {
     } catch (err) {
       setError('حدث خطأ أثناء تسجيل الدخول');
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
+    <div className="flex min-h-screen items-center justify-center p-4 bg-[var(--gaming-dark)]">
       <div className="w-full max-w-md game-card p-8">
-        <div className="gaming-header rounded-t-xl -m-8 mb-6">
-          <h1 className="text-2xl font-bold text-white">تسجيل دخول المشرف</h1>
+        <div className="gaming-header rounded-t-xl -m-8 mb-6 p-6">
+          <h1 className="text-2xl font-bold text-white text-center">تسجيل دخول المشرف</h1>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-[var(--gaming-danger)] text-white rounded-md">
+          <div className="mb-4 p-3 bg-[var(--gaming-danger)] text-white rounded-md text-center">
             {error}
           </div>
         )}
@@ -60,6 +66,7 @@ export default function LoginPage() {
               onChange={(e) => setUsername(e.target.value)}
               className="input-field"
               required
+              disabled={loading}
             />
           </div>
 
@@ -74,20 +81,18 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               className="input-field"
               required
+              disabled={loading}
             />
           </div>
 
           <button
             type="submit"
-            className="w-full btn btn-primary"
+            className="w-full btn btn-primary disabled:opacity-50"
+            disabled={loading}
           >
-            تسجيل الدخول
+            {loading ? 'جارٍ تسجيل الدخول...' : 'تسجيل الدخول'}
           </button>
         </form>
-
-        <p className="mt-4 text-center text-sm text-[var(--gaming-light)]">
-          بيانات الاعتماد الافتراضية: admin / admin123
-        </p>
       </div>
     </div>
   );

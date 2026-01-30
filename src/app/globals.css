@@ -61,6 +61,13 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Add mobile-specific base sizing */
+@media (max-width: 639px) {
+  html {
+    font-size: 14px; /* Down from default 16px */
+  }
+}
+
 body {
   background: var(--gaming-dark);
   color: hsl(var(--foreground));
@@ -490,5 +497,36 @@ body {
 @media (min-width: 641px) {
   .hide-desktop {
     display: none !important;
+  }
+}
+
+/* ==========================================
+   MOBILE-ONLY SIZE REDUCTIONS
+   ========================================== */
+
+@media (max-width: 639px) {
+  /* Button size reduction */
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .btn-accent,
+  .btn-success,
+  .btn-danger,
+  .btn-outline {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+  }
+
+  /* Input field reduction */
+  .input-field {
+    padding: 0.5rem 0.625rem;
+    font-size: 0.875rem;
+  }
+
+  /* Table cell reduction */
+  .gaming-table th,
+  .gaming-table td {
+    padding: 0.75rem 1rem;
+    font-size: 0.75rem;
   }
 }

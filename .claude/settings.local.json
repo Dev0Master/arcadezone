@@ -5,7 +5,8 @@
       "Bash(npm run build:*)",
       "Bash(dir:*)",
       "Bash(findstr:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(node check-games-ratings.js:*)"
     ]
   }
 }

@@ -9,6 +9,7 @@ import Footer from '@/components/layout/Footer';
 import StarRating from '@/components/ratings/StarRating';
 import ReviewForm from '@/components/ratings/ReviewForm';
 import ReviewList from '@/components/ratings/ReviewList';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 export default function GameDetailPage() {
   const [game, setGame] = useState<Game | null>(null);
@@ -71,14 +72,7 @@ export default function GameDetailPage() {
       <div className="min-h-screen bg-[var(--gaming-dark)]">
         <Header />
         <div className="flex items-center justify-center min-h-screen">
-          <div className="text-center">
-            <div className="relative w-24 h-24 mx-auto mb-6">
-              <div className="absolute inset-0 rounded-full border-4 border-[var(--gaming-primary)]/20" />
-              <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-[var(--gaming-primary)] animate-spin" />
-              <span className="absolute inset-0 flex items-center justify-center text-4xl">🎮</span>
-            </div>
-            <p className="text-xl text-[var(--gaming-light)]/80 animate-pulse">جارٍ تحميل اللعبة...</p>
-          </div>
+          <LoadingSpinner text="جارٍ تحميل اللعبة..." size="lg" />
         </div>
       </div>
     );

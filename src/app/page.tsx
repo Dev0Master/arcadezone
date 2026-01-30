@@ -1,11 +1,12 @@
 import { Suspense } from 'react';
 import HomePage from '@/components/HomePage';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 export default function Home() {
   return (
     <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center p-4">
-        <div className="text-2xl font-semibold text-[var(--gaming-primary)]">جارٍ تحميل الألعاب...</div>
+      <div className="min-h-screen bg-[var(--gaming-dark)] flex items-center justify-center">
+        <LoadingSpinner text="جارٍ تحميل الألعاب..." size="lg" />
       </div>
     }>
       <HomePage />

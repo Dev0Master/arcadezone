@@ -43,6 +43,15 @@ export async function POST(
       );
     }
 
+    // Verify game exists
+    const game = await db.getGameById(id);
+    if (!game) {
+      return Response.json(
+        { error: 'Game not found' },
+        { status: 404 }
+      );
+    }
+
     const newReview: Omit<Review, 'id' | 'createdAt'> = {
       gameId: id,
       userName: reviewData.userName,

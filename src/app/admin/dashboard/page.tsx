@@ -1,163 +1,69 @@
 "use client";
 
-import { useState, useEffect } from 'react';
 import { Game } from '@/lib/types';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import StarRating from '@/components/ratings/StarRating';
+import { useAdminLayout } from '../layout';
 
 export default function AdminDashboard() {
-  const [games, setGames] = useState<Game[]>([]);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
-
-  useEffect(() => {
-    // First, verify that the user is authenticated by making a simple authenticated API call
-    const verifyAuth = async () => {
-      try {
-        const response = await fetch('/api/games');
-        if (response.status === 401 || response.status === 403) {
-          // If unauthorized, redirect to login
-          router.push('/login');
-          return;
-        }
-
-        if (response.ok) {
-          const data = await response.json();
-          setGames(data.games);
-        } else {
-          // Handle other errors
-          router.push('/login');
-        }
-      } catch (error) {
-        console.error('Error verifying authentication or fetching games:', error);
-        router.push('/login');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    verifyAuth();
-  }, [router]);
-
-  const handleLogout = async () => {
-    try {
-      await fetch('/api/admin/logout', {
-        method: 'POST',
-      });
-
-      // The server will clear the HTTP-only auth token cookie
-      router.push('/login');
-      router.refresh();
-    } catch (error) {
-      console.error('Error logging out:', error);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center p-4">
-        <div className="text-2xl font-semibold text-[var(--gaming-primary)]">جارٍ تحميل لوحة التحكم...</div>
-      </div>
-    );
-  }
+  const { games, setGames } = useAdminLayout();
 
   return (
-    <div className="flex min-h-screen">
-      {/* Sidebar */}
-      <div className="w-64 gaming-sidebar">
-        <div className="p-4 border-b border-[var(--gaming-light)/30]">
-          <h1 className="text-xl font-bold text-[var(--gaming-primary)]">لوحة المشرف</h1>
+    <>
+      <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
+        <h2 className="text-2xl font-bold text-[var(--foreground)]">لوحة تحكم الألعاب</h2>
+        <div className="text-lg font-semibold text-[var(--gaming-accent)] whitespace-nowrap">
+          إجمالي الألعاب: <span className="text-[var(--gaming-primary)]">{games.length}</span>
         </div>
-        <nav className="p-4">
-          <ul className="space-y-2">
-            <li>
-              <Link href="/admin/dashboard" className="block p-2 text-[var(--gaming-primary)] font-bold">
-                لوحة التحكم
-              </Link>
-            </li>
-            <li>
-              <Link href="/admin/games/new" className="block p-2 text-[var(--gaming-light)] hover:bg-[var(--gaming-card-hover)] rounded">
-                إضافة لعبة جديدة
-              </Link>
-            </li>
-            <li>
-              <Link href="/admin/reviews" className="block p-2 text-[var(--gaming-light)] hover:bg-[var(--gaming-card-hover)] rounded">
-                إدارة المراجعات
-              </Link>
-            </li>
-            <li>
-              <Link href="/admin/categories" className="block p-2 text-[var(--gaming-light)] hover:bg-[var(--gaming-card-hover)] rounded">
-                الفئات
-              </Link>
-            </li>
-            <li>
-              <button
-                onClick={handleLogout}
-                className="w-full text-right p-2 text-[var(--gaming-light)] hover:bg-[var(--gaming-card-hover)] rounded"
-              >
-                تسجيل الخروج
-              </button>
-            </li>
-          </ul>
-        </nav>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 p-6 bg-[var(--background)]">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-[var(--foreground)]">لوحة تحكم الألعاب</h2>
-          <div className="text-lg font-semibold text-[var(--gaming-accent)]">
-            إجمالي الألعاب: <span className="text-[var(--gaming-primary)]">{games.length}</span>
-          </div>
+      {games.length === 0 ? (
+        <div className="game-card p-6 text-center">
+          <p className="text-[var(--gaming-light)]">لا توجد ألعاب في المتجر حتى الآن. أضف أول لعبة!</p>
+          <Link
+            href="/admin/games/new"
+            className="mt-4 inline-block btn btn-primary"
+          >
+            أضف أول لعبة
+          </Link>
         </div>
-
-        {games.length === 0 ? (
-          <div className="game-card p-6 text-center">
-            <p className="text-[var(--gaming-light)]">لا توجد ألعاب في المتجر حتى الآن. أضف أول لعبة!</p>
-            <Link
-              href="/admin/games/new"
-              className="mt-4 inline-block btn btn-primary"
-            >
-              أضف أول لعبة
-            </Link>
-          </div>
-        ) : (
-          <div className="game-card overflow-hidden">
-            <table className="gaming-table">
-              <thead>
-                <tr>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-[var(--gaming-light)] uppercase tracking-wider">العنوان</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-[var(--gaming-light)] uppercase tracking-wider">التقييم</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-[var(--gaming-light)] uppercase tracking-wider">المراجعات</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-[var(--gaming-light)] uppercase tracking-wider">الإجراءات</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[var(--gaming-light)/20]">
-                {games.map((game) => (
-                  <tr key={game.id} className="hover:bg-[var(--gaming-card-hover)]">
-                    <td className="px-6 py-4 whitespace-nowrap text-right">
-                      <div className="text-sm font-bold text-[var(--foreground)]">{game.title}</div>
-                      <div className="text-sm text-[var(--gaming-light)] line-clamp-1">{game.description}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right">
-                      {game.averageRating ? (
-                        <div className="flex items-center gap-2 justify-end">
-                          <span className="text-sm text-[var(--gaming-light)]">
-                            {game.averageRating.toFixed(1)}
-                          </span>
-                          <StarRating rating={game.averageRating} readonly size="sm" />
-                        </div>
-                      ) : (
-                        <span className="text-sm text-[var(--gaming-light)]">لا توجد تقييمات</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right">
-                      <span className="text-sm text-[var(--gaming-light)]">
-                        {game.totalRatings || 0} {game.totalRatings !== 1 ? 'مراجعة' : 'مراجعة'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+      ) : (
+        <div className="game-card overflow-x-auto">
+          <table className="gaming-table w-full min-w-[700px]">
+            <thead>
+              <tr>
+                <th className="px-4 py-3 text-right text-xs font-medium text-[var(--gaming-light)] uppercase tracking-wider">العنوان</th>
+                <th className="px-4 py-3 text-right text-xs font-medium text-[var(--gaming-light)] uppercase tracking-wider">التقييم</th>
+                <th className="px-4 py-3 text-right text-xs font-medium text-[var(--gaming-light)] uppercase tracking-wider">المراجعات</th>
+                <th className="px-4 py-3 text-right text-xs font-medium text-[var(--gaming-light)] uppercase tracking-wider">الإجراءات</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[var(--gaming-light)]/20">
+              {games.map((game: Game) => (
+                <tr key={game.id} className="hover:bg-[var(--gaming-card-hover)]">
+                  <td className="px-4 py-4 text-right">
+                    <div className="text-sm font-bold text-[var(--foreground)]">{game.title}</div>
+                    <div className="text-sm text-[var(--gaming-light)] line-clamp-1 max-w-xs">{game.description}</div>
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-right">
+                    {game.averageRating ? (
+                      <div className="flex items-center gap-2 justify-end">
+                        <span className="text-sm text-[var(--gaming-light)]">
+                          {game.averageRating.toFixed(1)}
+                        </span>
+                        <StarRating rating={game.averageRating} readonly size="sm" />
+                      </div>
+                    ) : (
+                      <span className="text-sm text-[var(--gaming-light)]">لا توجد تقييمات</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-right">
+                    <span className="text-sm text-[var(--gaming-light)]">
+                      {game.totalRatings || 0} مراجعة
+                    </span>
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
+                    <div className="flex gap-2 justify-start">
                       <button
                         onClick={async () => {
                           if (confirm('هل أنت متأكد من حذف هذه اللعبة؟')) {
@@ -165,30 +71,30 @@ export default function AdminDashboard() {
                               method: 'DELETE',
                             });
                             if (response.ok) {
-                              setGames(games.filter(g => g.id !== game.id));
+                              setGames(games.filter((g: Game) => g.id !== game.id));
                             } else {
                               alert('فشل في حذف اللعبة');
                             }
                           }
                         }}
-                        className="btn btn-danger ml-2"
+                        className="btn btn-danger text-sm px-3 py-1"
                       >
                         حذف
                       </button>
                       <Link
                         href={`/admin/games/edit/${game.id}`}
-                        className="btn btn-outline"
+                        className="btn btn-outline text-sm px-3 py-1"
                       >
                         تعديل
                       </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-    </div>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </>
   );
 }
